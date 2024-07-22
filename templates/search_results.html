@@ -1,0 +1,98 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .container {
+            padding: 50px;
+        }
+
+        .result {
+            margin-bottom: 20px;
+            padding: 20px;
+            border: 1px solid #dee2e6;
+            border-radius: 15px; /* Rounder corners */
+        }
+
+        .result h2 {
+            margin-top: 0;
+        }
+
+        .result p {
+            margin: 5px 0;
+        }
+
+        .search-bar {
+            width: 100%;
+            max-width: 600px;
+            margin: 20px auto;
+        }
+
+        .input-group .form-control {
+            border-radius: 30px 0 0 30px; /* Rounder corners */
+        }
+
+        .input-group .btn {
+            border-radius: 0 30px 30px 0; /* Rounder corners */
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .search-container {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .search-container img {
+            width: 150px; /* Adjust as needed */
+            height: auto;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="search-container">
+            <img src="{% static 'images/Northeastern_logo.svg' %}" alt="Logo">
+            <form action="{% url 'search' %}" method="get" class="search-bar">
+                <div class="input-group">
+                    <input type="text" class="form-control" name="q" placeholder="Search for skills or names..." aria-label="Search" value="{{ query }}">
+                    <div class="input-group-append">
+                        <button class="btn btn-dark" type="submit">Search</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <h1>Search Results</h1>
+        {% if query %}
+            <p>Results for "{{ query }}":</p>
+        {% endif %}
+        {% for result in results %}
+            <div class="result">
+                <h2>{{ result.name }}</h2>
+                <p><strong>Organization:</strong> {{ result.organization }}</p>
+                <p><strong>Email:</strong> {{ result.email }}</p>
+                <p><strong>Phone:</strong> {{ result.phone }}</p>
+                <p><strong>Top Skills:</strong> {{ result.top_skills }}</p>
+                <p><strong>Other Skills:</strong> {{ result.other_skills }}</p>
+            </div>
+        {% empty %}
+            <p>No results found.</p>
+        {% endfor %}
+    </div>
+</body>
+</html>
