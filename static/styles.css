@@ -1,0 +1,80 @@
+/* styles.css */
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+}
+
+.person-detail-container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+.logo {
+    width: 120px;
+    height: auto;
+    display: block;
+    margin: 0 auto 30px;
+}
+
+.back-button {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: none;
+    border: none;
+    color: #333;
+    font-size: 28px;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.back-button:hover {
+    color: #555;
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 2em;
+}
+
+p {
+    margin: 15px 0;
+    font-size: 1.1em;
+    color: #555;
+    line-height: 1.6;
+}
+
+p strong {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 1.2em;
+    color: #333;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .back-button {
+        font-size: 24px;
+        top: 10px;
+        left: 10px;
+    }
+
+    .logo {
+        width: 100px;
+    }
+
+    .person-detail-container {
+        padding: 20px;
+        margin: 20px;
+    }
+}

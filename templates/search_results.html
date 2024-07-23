@@ -5,99 +5,114 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Search Results</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <style>
-        body, html {
-            height: 100%;
+        body {
+            font-family: Arial, sans-serif;
             margin: 0;
-            font-family: Arial, Helvetica, sans-serif;
+            padding: 0;
+            background-color: #f4f4f4;
         }
 
         .container {
-            padding: 50px;
+            width: 80%;
+            margin: 0 auto;
+            text-align: center; /* Center the content inside the container */
+            padding-top: 40px; /* Add space at the top of the container */
         }
 
-        .result {
-            margin-bottom: 20px;
-            padding: 20px;
-            border: 1px solid #dee2e6;
-            border-radius: 15px;
-        }
-
-        .result h2 {
-            margin-top: 0;
-        }
-
-        .result p {
-            margin: 5px 0;
-        }
-
-        .search-bar {
-            width: 100%;
-            max-width: 600px;
-            margin: 20px auto;
-        }
-
-        .input-group .form-control {
-            border-radius: 30px 0 0 30px;
-        }
-
-        .input-group .btn {
-            border-radius: 0 30px 30px 0;
-        }
-
-        h1 {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .search-container {
-            margin-bottom: 30px;
-            text-align: center;
-        }
-
-        .search-container img {
+        .logo {
             width: 150px;
             height: auto;
             margin-bottom: 20px;
+        }
+
+        .search-bar {
+            margin-bottom: 20px;
+            text-align: center; /* Center the form content */
+        }
+
+        .search-bar input {
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            width: 70%;
+            max-width: 500px; /* Ensure the input doesn't stretch too wide */
+            box-sizing: border-box; /* Include padding and border in width calculation */
+        }
+
+        .search-bar button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            background-color: #333;
+            color: white;
+            cursor: pointer;
+            margin-left: 10px; /* Space between input and button */
+        }
+
+        .search-bar button:hover {
+            background-color: #555;
+        }
+
+        .result-box {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 10px 0;
+            background-color: #f9f9f9;
+            transition: background-color 0.3s, box-shadow 0.3s;
+            text-decoration: none;
+            color: #333;
+            display: block;
+            text-align: left; /* Align text inside the result box to the left */
+            max-width: 100%; /* Ensure the box doesn't exceed container width */
+            margin: 0 auto; /* Center the box horizontally */
+        }
+
+        .result-box:hover {
+            background-color: #f0f0f0;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .result-header {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+
+        .result-details {
+            font-size: 1em;
+        }
+
+        .result-details span {
+            display: block;
+            margin-bottom: 5px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="search-container">
-            <a href="{% url 'index' %}">
-                <img src="{% static 'images/Northeastern_logo.svg' %}" alt="Logo">
-            </a>
-            <form action="{% url 'search' %}" method="get" class="search-bar">
-                <div class="input-group">
-                    <input type="text" class="form-control" name="q" placeholder="Search for skills or names..." aria-label="Search" value="{{ query }}">
-                    <div class="input-group-append">
-                        <button class="btn btn-dark" type="submit">Search</button>
-                    </div>
-                </div>
-            </form>
-        </div>
-
+        <a href="{% url 'index' %}"><img src="{% static 'images/Northeastern_logo.svg' %}" alt="Logo" class="logo"></a>
         <h1>Search Results</h1>
-        {% if query %}
-            <p>Results for "{{ query }}":</p>
+        <form action="{% url 'search' %}" method="get" class="search-bar">
+            <input type="text" name="q" value="{{ query }}" placeholder="Search for skills..." />
+            <button type="submit">Search</button>
+        </form>
+        {% if results %}
+            {% for person in results %}
+                <a href="{% url 'person_detail' person.pk %}" class="result-box">
+                    <div class="result-header">{{ person.name }} - {{ person.title }}</div>
+                    <div class="result-details">
+                        <span>Division: {{ person.division }}</span>
+                        <span>Program: {{ person.program }}</span>
+                    </div>
+                </a>
+            {% endfor %}
+        {% else %}
+            <p>No results found for "{{ query }}"</p>
         {% endif %}
-        {% for result in results %}
-            <div class="result">
-                <h2>{{ result.name }}</h2>
-                <p><strong>Email:</strong> {{ result.email }}</p>
-                <p><strong>Phone:</strong> {{ result.phone }}</p>
-                <p><strong>Title:</strong> {{ result.title }}</p>
-                <p><strong>Division:</strong> {{ result.division }}</p>
-                <p><strong>Program:</strong> {{ result.program }}</p>
-                <p><strong>Bio:</strong> {{ result.bio }}</p>
-                <p><strong>Top Skills:</strong> {{ result.top_skills }}</p>
-                <p><strong>Other Skills:</strong> {{ result.other_skills }}</p>
-            </div>
-        {% empty %}
-            <p>No results found.</p>
-        {% endfor %}
     </div>
 </body>
 </html>
