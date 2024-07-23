@@ -21,7 +21,7 @@
             margin-bottom: 20px;
             padding: 20px;
             border: 1px solid #dee2e6;
-            border-radius: 15px; /* Rounder corners */
+            border-radius: 15px;
         }
 
         .result h2 {
@@ -39,11 +39,11 @@
         }
 
         .input-group .form-control {
-            border-radius: 30px 0 0 30px; /* Rounder corners */
+            border-radius: 30px 0 0 30px;
         }
 
         .input-group .btn {
-            border-radius: 0 30px 30px 0; /* Rounder corners */
+            border-radius: 0 30px 30px 0;
         }
 
         h1 {
@@ -57,7 +57,7 @@
         }
 
         .search-container img {
-            width: 150px; /* Adjust as needed */
+            width: 150px;
             height: auto;
             margin-bottom: 20px;
         }
@@ -66,7 +66,9 @@
 <body>
     <div class="container">
         <div class="search-container">
-            <img src="{% static 'images/Northeastern_logo.svg' %}" alt="Logo">
+            <a href="{% url 'index' %}">
+                <img src="{% static 'images/Northeastern_logo.svg' %}" alt="Logo">
+            </a>
             <form action="{% url 'search' %}" method="get" class="search-bar">
                 <div class="input-group">
                     <input type="text" class="form-control" name="q" placeholder="Search for skills or names..." aria-label="Search" value="{{ query }}">
@@ -84,9 +86,12 @@
         {% for result in results %}
             <div class="result">
                 <h2>{{ result.name }}</h2>
-                <p><strong>Organization:</strong> {{ result.organization }}</p>
                 <p><strong>Email:</strong> {{ result.email }}</p>
                 <p><strong>Phone:</strong> {{ result.phone }}</p>
+                <p><strong>Title:</strong> {{ result.title }}</p>
+                <p><strong>Division:</strong> {{ result.division }}</p>
+                <p><strong>Program:</strong> {{ result.program }}</p>
+                <p><strong>Bio:</strong> {{ result.bio }}</p>
                 <p><strong>Top Skills:</strong> {{ result.top_skills }}</p>
                 <p><strong>Other Skills:</strong> {{ result.other_skills }}</p>
             </div>

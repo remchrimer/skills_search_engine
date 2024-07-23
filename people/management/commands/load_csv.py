@@ -9,12 +9,17 @@ class Command(BaseCommand):
         with open('data/people.csv', 'r') as file:
             reader = csv.DictReader(file)
             for row in reader:
-                Person.objects.create(
+                Person.objects.update_or_create(
                     name=row['Name'],
-                    organization=row['Organization'],
-                    email=row['Email'],
-                    phone=row['Phone'],
-                    top_skills=row['Top Skills'],
-                    other_skills=row['Other Skills']
+                    defaults={
+                        'email': row['Email'],
+                        'phone': row['Phone'],
+                        'title': row['Title'],
+                        'division': row['Division'],
+                        'program': row['Program'],
+                        'bio': row['Bio'],
+                        'top_skills': row['Top Skills'],
+                        'other_skills': row['Other Skills']
+                    }
                 )
         self.stdout.write(self.style.SUCCESS('Successfully loaded data from CSV'))
