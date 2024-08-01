@@ -167,141 +167,129 @@
     </div>
 
    <script>
-$(document).ready(function() {
-    var modal = document.getElementById("myModal");
-    var btn = document.getElementById("openModalBtn");
-    var span = document.getElementsByClassName("close")[0];
+        $(document).ready(function() {
+            var modal = document.getElementById("myModal");
+            var btn = document.getElementById("openModalBtn");
+            var span = document.getElementsByClassName("close")[0];
 
 
-    btn.onclick = function() {
-        modal.style.display = "block";
-        loadGraph();
-    }
+            btn.onclick = function() {
+                modal.style.display = "block";
+                loadGraph();
+            }
 
 
-    span.onclick = function() {
-        modal.style.display = "none";
-    }
+            span.onclick = function() {
+                modal.style.display = "none";
+            }
 
 
-    window.onclick = function(event) {
-        if (event.target == modal) {
-            modal.style.display = "none";
-        }
-    }
-
-
-    async function loadGraph() {
-    try {
-        const person = document.getElementById("openModalBtn").getAttribute('data-person');
-
-
-        if (!person) {
-            console.error('No person parameter found');
-            return;
-        }
-
-
-        let response = await fetch(`/get_graph_data/?person=${encodeURIComponent(person)}`);
-        let data = await response.json();
-
-
-        let container = document.getElementById('networkContainer');
-        let options = {
-            nodes: {
-                shape: 'dot',
-                size: 30,
-                font: {
-                    size: 12,
-                    color: '#005377'
-                },
-                borderWidth: 2
-            },
-            edges: {
-                width: 2
-            },
-            groups: {
-                skill: {
-                    color: { background: '#97C2FC', border: '#97b1fc' },
-                    shape: 'dot'
-                },
-                name: {
-                    color: { background: '#E1D69F', border: '#d5c67a' },
-                    shape: 'box'
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
                 }
-            },
-            physics: {
-                forceAtlas2Based: {
-                    gravitationalConstant: -26,
-                    centralGravity: 0.005,
-                    springLength: 230,
-                    springConstant: 0.18
-                },
-                maxVelocity: 146,
-                solver: 'forceAtlas2Based',
-                timestep: 0.35,
-                stabilization: {iterations: 150}
-            },
-            interaction: {
-                dragNodes: true,
-                dragView: false,
-                zoomView: false
             }
-        };
 
 
-        // Remove duplicates from nodes
-        let uniqueNodes = {};
-        data.nodes.forEach(node => {
-            if (!uniqueNodes[node.id]) {
-                uniqueNodes[node.id] = node;
-            }
-        });
+            async function loadGraph() {
+            try {
+                const person = document.getElementById("openModalBtn").getAttribute('data-person');
 
 
-        // Convert the unique nodes object back to an array
-        let nodes = Object.values(uniqueNodes);
-
-        // Customize nodes to ensure no tooltips are set
-        data.nodes.forEach(node => { node.title = node.name;});
-
-        let network = new vis.Network(container, { nodes: nodes, edges: data.edges }, options);
+                if (!person) {
+                    console.error('No person parameter found');
+                    return;
+                }
 
 
-        network.on("click", function (params) {
-            if (params.nodes.length > 0) {
-                let nodeId = params.nodes[0];
-                let node = nodes.find(n => n.id === nodeId);
-                if (node) {
-                    if (node.group === 'name') {
-                        let personName = encodeURIComponent(node.label);
-                        let uniqueIdPart = encodeURIComponent(node.id);
-                        window.location.href = `/person/${personName}/${uniqueIdPart}/`;
+                let response = await fetch(`/get_graph_data/?person=${encodeURIComponent(person)}`);
+                let data = await response.json();
+
+
+                let container = document.getElementById('networkContainer');
+                let options = {
+                    nodes: {
+                        shape: 'dot',
+                        size: 30,
+                        font: {
+                            size: 12,
+                            color: '#005377'
+                        },
+                        borderWidth: 2
+                    },
+                    edges: {
+                        width: 2
+                    },
+                    groups: {
+                        skill: {
+                            color: { background: '#97C2FC', border: '#97b1fc' },
+                            shape: 'dot'
+                        },
+                        name: {
+                            color: { background: '#E1D69F', border: '#d5c67a' },
+                            shape: 'box'
+                        }
+                    },
+                    physics: {
+                        forceAtlas2Based: {
+                            gravitationalConstant: -26,
+                            centralGravity: 0.005,
+                            springLength: 230,
+                            springConstant: 0.18
+                        },
+                        maxVelocity: 146,
+                        solver: 'forceAtlas2Based',
+                        timestep: 0.35,
+                        stabilization: {iterations: 150}
+                    },
+                    interaction: {
+                        dragNodes: true,
+                        dragView: false,
+                        zoomView: false
                     }
-                }
-            } else {
-                document.getElementById('nodeInfo').style.display = 'none';
+                };
+
+
+                // Remove duplicates from nodes
+                let uniqueNodes = {};
+                data.nodes.forEach(node => {
+                    if (!uniqueNodes[node.id]) {
+                        uniqueNodes[node.id] = node;
+                    }
+                });
+
+
+                // Convert the unique nodes object back to an array
+                let nodes = Object.values(uniqueNodes);
+
+                // Customize nodes to ensure no tooltips are set
+                data.nodes.forEach(node => { node.title = node.name;});
+
+                let network = new vis.Network(container, { nodes: nodes, edges: data.edges }, options);
+
+
+                network.on("click", function (params) {
+                    if (params.nodes.length > 0) {
+                        let nodeId = params.nodes[0];
+                        let node = nodes.find(n => n.id === nodeId);
+                        if (node) {
+                            if (node.group === 'name') {
+                                let personName = encodeURIComponent(node.label);
+                                let uniqueIdPart = encodeURIComponent(node.id);
+                                window.location.href = `/person/${personName}/${uniqueIdPart}/`;
+                            }
+                        }
+                    } else {
+                        document.getElementById('nodeInfo').style.display = 'none';
+                    }
+                });
+
+
+            } catch (error) {
+                console.error('Error loading graph data:', error);
             }
+        }
         });
-
-
-    } catch (error) {
-        console.error('Error loading graph data:', error);
-    }
-}
-
-
-
-
-
-
-});
-</script>
-
-
-
-
-
-
+   </script>
 </body>
 </html>

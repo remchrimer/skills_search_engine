@@ -8,17 +8,36 @@ def index(request):
 
 def search(request):
     query = request.GET.get('q', '')
-    results = Person.objects.filter(
-        name__icontains=query
-    ) | Person.objects.filter(
-        top_skills__icontains=query
-    ) | Person.objects.filter(
-        other_skills__icontains=query
-    )
+    title_filter = request.GET.get('title', '')
+    division_filter = request.GET.get('division', '')
+    program_filter = request.GET.get('program', '')
+
+    results = Person.objects.all()
+
+    if query:
+        results = results.filter(
+            name__icontains=query
+        ) | results.filter(
+            top_skills__icontains=query
+        ) | results.filter(
+            other_skills__icontains=query
+        )
+
+    if title_filter:
+        results = results.filter(title=title_filter)
+
+    if division_filter and division_filter != 'All':
+        results = results.filter(division=division_filter)
+
+    if program_filter:
+        results = results.filter(program=program_filter)
 
     return render(request, 'search_results.html', {
         'query': query,
-        'results': results
+        'results': results,
+        'title_filter': title_filter,
+        'division_filter': division_filter,
+        'program_filter': program_filter
     })
 
 def person_detail(request, name, unique_id_part):
