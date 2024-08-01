@@ -2,25 +2,42 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enter Passcode</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Enter Passcode</title>
+   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+   <style>
+       .logo {
+           width: 150px;
+           height: auto;
+           display: block;
+           margin: 0 auto 20px;
+       }
+       .btn-black {
+           background-color: #000;
+           color: #fff;
+           border: none;
+       }
+       .btn-black:hover {
+           background-color: #333;
+       }
+   </style>
 </head>
 <body>
-    <div class="container mt-5">
-        <h1>Enter Passcode</h1>
-        <form method="post">
-            {% csrf_token %}
-            <div class="form-group">
-                <label for="passcode">Passcode:</label>
-                <input type="password" class="form-control" id="passcode" name="passcode" required>
-            </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
-            {% if error %}
-                <p class="text-danger mt-2">{{ error }}</p>
-            {% endif %}
-        </form>
-    </div>
+   <div class="container mt-5">
+       <img src="{% static 'images/Northeastern_logo.svg' %}" alt="Logo" class="logo">
+       <h1 class="text-center">Enter Passcode</h1>
+       <form method="post">
+           {% csrf_token %}
+           <div class="form-group">
+               <label for="passcode">Passcode:</label>
+               <input type="password" class="form-control" id="passcode" name="passcode" required>
+           </div>
+           <button type="submit" class="btn btn-black">Submit</button>
+           {% if error %}
+               <p class="text-danger mt-2">{{ error }}</p>
+           {% endif %}
+       </form>
+   </div>
 </body>
 </html>

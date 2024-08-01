@@ -126,10 +126,12 @@ def get_graph_data(request):
 def graph_view(request):
     return render(request, 'graph.html')
 
+from django.conf import settings
 def passcode_check(request):
     if request.method == 'POST':
-        passcode = request.POST.get('passcode')
-        if passcode == 'abcd':
+        entered_passcode = request.POST.get('passcode')
+        if entered_passcode == settings.PASSCODE:
+            request.session['passcode_verified'] = True
             return redirect('upload_resume')
         else:
             return render(request, 'passcode_check.html', {'error': 'Invalid passcode'})
@@ -140,6 +142,8 @@ from django.views.decorators.csrf import csrf_exempt
 from people.utils import *
 
 def upload_resume(request):
+    if not request.session.get('passcode_verified', False):
+        return redirect('passcode_check')
     return render(request, 'upload_resume.html')
 
 def edit_file(request, file_index):
