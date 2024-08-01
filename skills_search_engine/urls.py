@@ -16,12 +16,20 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from people.views import index, search, person_detail
+from people.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', index, name='index'),
     path('search/', search, name='search'),
-    path('person/<int:pk>/', person_detail, name='person_detail'),
+    path('person/<str:name>/<str:unique_id_part>/', person_detail, name='person_detail'),
+    path('get_graph_data/', get_graph_data, name='get_graph_data'),
+    path('graph/', graph_view, name='graph'),
+    path('passcode/', passcode_check, name='passcode_check'),
+    path('upload/', upload_resume, name='upload_resume'),
+    path('upload_file/', upload_file, name='upload_file'),
+    path('save_details/', save_details, name='save_details'),
+    path('edit_file/<int:file_index>/', edit_file, name='edit_file'),
+    path('save_file_details/', save_file_details, name='save_file_details'),
 ]
 

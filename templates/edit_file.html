@@ -1,0 +1,136 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit File</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>Edit File Details</h1>
+        {% if error %}
+            <div class="alert alert-danger">{{ error }}</div>
+        {% endif %}
+        <form method="post" action="{% url 'save_details' %}">
+            {% csrf_token %}
+            <input type="hidden" name="file_index" value="{{ file_index }}">
+            <input type="hidden" name="id" value="{{ file_detail.id }}">
+            <div class="form-group">
+                <label for="name">Full Name:</label>
+                <input type="text" class="form-control" id="name" name="name" value="{{ file_detail.name }}">
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address:</label>
+                <input type="email" class="form-control" id="email" name="email" value="{{ file_detail.email }}">
+            </div>
+
+            <div class="form-group">
+                <label for="title">Title:</label>
+                <select class="form-control" id="title" name="title" required>
+                    <option value="">Select Role</option>
+                    <option value="Faculty" {% if file_detail.title == 'Faculty' %}selected{% endif %}>Faculty</option>
+                    <option value="Staff" {% if file_detail.title == 'Staff' %}selected{% endif %}>Staff</option>
+                    <option value="Administrator" {% if file_detail.title == 'Administrator' %}selected{% endif %}>Administrator</option>
+                    <option value="Other" {% if file_detail.title == 'Other' %}selected{% endif %}>Other</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="division">Division:</label>
+                <select class="form-control" id="division" name="division" required>
+                    <option value="">Select Division</option>
+                    <option value="Undergraduate" {% if file_detail.division == 'Undergraduate' %}selected{% endif %}>Undergraduate</option>
+                    <option value="Graduate Professional" {% if file_detail.division == 'Graduate Professional' %}selected{% endif %}>Graduate Professional</option>
+                    <option value="Pathways" {% if file_detail.division == 'Pathways' %}selected{% endif %}>Pathways</option>
+                    <option value="GSE" {% if file_detail.division == 'GSE' %}selected{% endif %}>GSE</option>
+                    <option value="All" {% if file_detail.division == 'All' %}selected{% endif %}>All</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="program">Program:</label>
+                <select class="form-control" id="program" name="program" required>
+                    <option value="">Select Program</option>
+                    <option value="Advanced Manufacturing" {% if file_detail.program == 'Advanced Manufacturing' %}selected{% endif %}>Advanced Manufacturing</option>
+                    <option value="Analytics" {% if file_detail.program == 'Analytics' %}selected{% endif %}>Analytics</option>
+                    <option value="Applied Machine Intelligence" {% if file_detail.program == 'Applied Machine Intelligence' %}selected{% endif %}>Applied Machine Intelligence</option>
+                    <option value="Applied Nutrition" {% if file_detail.program == 'Applied Nutrition' %}selected{% endif %}>Applied Nutrition</option>
+                    <option value="Biological Science" {% if file_detail.program == 'Biological Science' %}selected{% endif %}>Biological Science</option>
+                    <option value="Biotechnology" {% if file_detail.program == 'Biotechnology' %}selected{% endif %}>Biotechnology</option>
+                    <option value="Commerce and Economic Development" {% if file_detail.program == 'Commerce and Economic Development' %}selected{% endif %}>Commerce and Economic Development</option>
+                    <option value="Computer Engineering Technology" {% if file_detail.program == 'Computer Engineering Technology' %}selected{% endif %}>Computer Engineering Technology</option>
+                    <option value="Corporate & Organizational Communication" {% if file_detail.program == 'Corporate & Organizational Communication' %}selected{% endif %}>Corporate & Organizational Communication</option>
+                    <option value="Criminal Justice" {% if file_detail.program == 'Criminal Justice' %}selected{% endif %}>Criminal Justice</option>
+                    <option value="Digital Communication and Media" {% if file_detail.program == 'Digital Communication and Media' %}selected{% endif %}>Digital Communication and Media</option>
+                    <option value="Digital Media" {% if file_detail.program == 'Digital Media' %}selected{% endif %}>Digital Media</option>
+                    <option value="Doctor of Education" {% if file_detail.program == 'Doctor of Education' %}selected{% endif %}>Doctor of Education</option>
+                    <option value="Doctor of Law and Policy" {% if file_detail.program == 'Doctor of Law and Policy' %}selected{% endif %}>Doctor of Law and Policy</option>
+                    <option value="Elementary Education" {% if file_detail.program == 'Elementary Education' %}selected{% endif %}>Elementary Education</option>
+                    <option value="Electrical Engineering Technology" {% if file_detail.program == 'Electrical Engineering Technology' %}selected{% endif %}>Electrical Engineering Technology</option>
+                    <option value="Experiential Career Prep" {% if file_detail.program == 'Experiential Career Prep' %}selected{% endif %}>Experiential Career Prep</option>
+                    <option value="Finance and Accounting Mgt." {% if file_detail.program == 'Finance and Accounting Mgt.' %}selected{% endif %}>Finance and Accounting Mgt.</option>
+                    <option value="Geospatial Services" {% if file_detail.program == 'Geospatial Services' %}selected{% endif %}>Geospatial Services</option>
+                    <option value="Global Social Enterprise Graduate Professional Certificates" {% if file_detail.program == 'Global Social Enterprise Graduate Professional Certificates' %}selected{% endif %}>Global Social Enterprise Graduate Professional Certificates</option>
+                    <option value="Global Studies and International Relations" {% if file_detail.program == 'Global Studies and International Relations' %}selected{% endif %}>Global Studies and International Relations</option>
+                    <option value="Health Management" {% if file_detail.program == 'Health Management' %}selected{% endif %}>Health Management</option>
+                    <option value="Health Science" {% if file_detail.program == 'Health Science' %}selected{% endif %}>Health Science</option>
+                    <option value="Healthcare Administration" {% if file_detail.program == 'Healthcare Administration' %}selected{% endif %}>Healthcare Administration</option>
+                    <option value="Higher Education Administration" {% if file_detail.program == 'Higher Education Administration' %}selected{% endif %}>Higher Education Administration</option>
+                    <option value="Homeland Security, Port Security" {% if file_detail.program == 'Homeland Security, Port Security' %}selected{% endif %}>Homeland Security, Port Security</option>
+                    <option value="Human Resources Management" {% if file_detail.program == 'Human Resources Management' %}selected{% endif %}>Human Resources Management</option>
+                    <option value="Informatics" {% if file_detail.program == 'Informatics' %}selected{% endif %}>Informatics</option>
+                    <option value="Information Technology" {% if file_detail.program == 'Information Technology' %}selected{% endif %}>Information Technology</option>
+                    <option value="Insurance Analytics Management" {% if file_detail.program == 'Insurance Analytics Management' %}selected{% endif %}>Insurance Analytics Management</option>
+                    <option value="Interdisciplinary Studies" {% if file_detail.program == 'Interdisciplinary Studies' %}selected{% endif %}>Interdisciplinary Studies</option>
+                    <option value="Leadership" {% if file_detail.program == 'Leadership' %}selected{% endif %}>Leadership</option>
+                    <option value="Learning Experience Design and Technology" {% if file_detail.program == 'Learning Experience Design and Technology' %}selected{% endif %}>Learning Experience Design and Technology</option>
+                    <option value="Management" {% if file_detail.program == 'Management' %}selected{% endif %}>Management</option>
+                    <option value="Mathematics" {% if file_detail.program == 'Mathematics' %}selected{% endif %}>Mathematics</option>
+                    <option value="Mechanical Engineering Technology" {% if file_detail.program == 'Mechanical Engineering Technology' %}selected{% endif %}>Mechanical Engineering Technology</option>
+                    <option value="Mechatronics" {% if file_detail.program == 'Mechatronics' %}selected{% endif %}>Mechatronics</option>
+                    <option value="General Education" {% if file_detail.program == 'General Education' %}selected{% endif %}>General Education</option>
+                    <option value="Nonprofit Management" {% if file_detail.program == 'Nonprofit Management' %}selected{% endif %}>Nonprofit Management</option>
+                    <option value="Organizational Leadership" {% if file_detail.program == 'Organizational Leadership' %}selected{% endif %}>Organizational Leadership</option>
+                    <option value="Program and Portfolio Mgt" {% if file_detail.program == 'Program and Portfolio Mgt' %}selected{% endif %}>Program and Portfolio Mgt</option>
+                    <option value="Project Management" {% if file_detail.program == 'Project Management' %}selected{% endif %}>Project Management</option>
+                    <option value="Psychology" {% if file_detail.program == 'Psychology' %}selected{% endif %}>Psychology</option>
+                    <option value="Public Relations Management" {% if file_detail.program == 'Public Relations Management' %}selected{% endif %}>Public Relations Management</option>
+                    <option value="Regulatory Affairs" {% if file_detail.program == 'Regulatory Affairs' %}selected{% endif %}>Regulatory Affairs</option>
+                    <option value="Regulatory Affairs of Food" {% if file_detail.program == 'Regulatory Affairs of Food' %}selected{% endif %}>Regulatory Affairs of Food</option>
+                    <option value="Respiratory Care" {% if file_detail.program == 'Respiratory Care' %}selected{% endif %}>Respiratory Care</option>
+                    <option value="Sales Management" {% if file_detail.program == 'Sales Management' %}selected{% endif %}>Sales Management</option>
+                    <option value="Security and Intelligence Studies" {% if file_detail.program == 'Security and Intelligence Studies' %}selected{% endif %}>Security and Intelligence Studies</option>
+                    <option value="Sports Leadership" {% if file_detail.program == 'Sports Leadership' %}selected{% endif %}>Sports Leadership</option>
+                    <option value="Strategic Intelligence & Analysis" {% if file_detail.program == 'Strategic Intelligence & Analysis' %}selected{% endif %}>Strategic Intelligence & Analysis</option>
+                    <option value="Teaching - Elementary" {% if file_detail.program == 'Teaching - Elementary' %}selected{% endif %}>Teaching - Elementary</option>
+                    <option value="Teaching - Secondary" {% if file_detail.program == 'Teaching - Secondary' %}selected{% endif %}>Teaching - Secondary</option>
+                    <option value="Technical Communication" {% if file_detail.program == 'Technical Communication' %}selected{% endif %}>Technical Communication</option>
+                    <option value="Transitional Doctor of Physical Therapy" {% if file_detail.program == 'Transitional Doctor of Physical Therapy' %}selected{% endif %}>Transitional Doctor of Physical Therapy</option>
+                    <option value="Learning & Instruction" {% if file_detail.program == 'Learning & Instruction' %}selected{% endif %}>Learning & Instruction</option>
+                    <option value="Special Education" {% if file_detail.program == 'Special Education' %}selected{% endif %}>Special Education</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="bio">Expertise & Interests:</label>
+                <textarea class="form-control" id="bio" name="bio" placeholder="Briefly highlight your professional expertise, research, or professional interests." required>{{ file_detail.bio|default:'' }}</textarea>
+            </div>
+
+           <div class="form-group">
+                <label for="top_skills">Top Skills:</label>
+                <input type="text" class="form-control" id="top_skills" name="top_skills" value="{{ file_detail.topSkills|default:''|join:", " }}">
+           </div>
+
+            <div class="form-group">
+                <label for="other_skills">All Skills:</label>
+                <input type="text" class="form-control" id="other_skills" name="other_skills" value="{{ file_detail.otherSkills|default:''|join:", " }}">
+            </div>
+            <button type="submit" id="nextButton" class="btn btn-primary">Save and Next</button>
+            <a href="{% url 'upload_resume' %}" class="btn btn-secondary">Back to Upload</a>
+        </form>
+    </div>
+</body>
+</html>

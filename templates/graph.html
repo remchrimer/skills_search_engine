@@ -1,0 +1,295 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skill Network Visualization</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+        }
+
+        #mynetwork {
+            width: 100%;
+            height: 100%;
+            border: 1px solid lightgray;
+        }
+
+        #nodeInfo {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 300px;
+            max-height: 90%;
+            background-color: #ffffff;
+            overflow-y: auto;
+            padding: 20px;
+            border-left: 1px solid lightgray;
+            display: none;
+            box-sizing: border-box;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        #nodeInfo h3 {
+            margin-top: 0;
+            font-size: 1.5em;
+            color: #333;
+        }
+
+        #nodeInfo p {
+            font-size: 1em;
+            color: #555;
+            line-height: 1.5;
+            margin: 10px 0;
+        }
+
+        #nodeInfo p span {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .name-link {
+            cursor: pointer;
+            color: #007bff;
+            text-decoration: underline;
+        }
+
+        .name-link:hover {
+            text-decoration: none;
+        }
+
+        #nodeInfo .back-button, #nodeInfo .close-button {
+            cursor: pointer;
+            color: #007bff;
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+
+        #nodeInfo .back-button {
+            display: none;
+        }
+
+        #nodeInfo .close-button {
+            float: right;
+            color: #ff0000;
+        }
+
+        #nodeInfo .back-button:hover, #nodeInfo .close-button:hover {
+            color: #0056b3;
+        }
+
+        #nodeInfo .close-button:hover {
+            color: #cc0000;
+        }
+    </style>
+</head>
+<body>
+    <div id="mynetwork"></div>
+    <div id="nodeInfo">
+        <i class="fas fa-arrow-left back-button"></i>
+        <i class="fas fa-times close-button"></i>
+        <div id="infoContent"></div>
+    </div>
+    <script>
+        async function loadGraph() {
+            try {
+                const urlParams = new URLSearchParams(window.location.search);
+                const person = urlParams.get('person');
+
+                let response = await fetch(`/get_graph_data/?person=${person}`);
+                let data = await response.json();
+
+                let container = document.getElementById('mynetwork');
+                let options = {
+                    nodes: {
+                        shape: 'dot',
+                        size: 30,
+                        font: {
+                            size: 12,
+                            color: '#005377'
+                        },
+                        borderWidth: 2
+                    },
+                    edges: {
+                        width: 2
+                    },
+                    groups: {
+                        skill: {
+                            color: { background: '#97C2FC', border: '#97b1fc' },
+                            shape: 'dot'
+                        },
+                        name: {
+                            color: { background: '#E1D69F', border: '#d5c67a' },
+                            shape: 'box'
+                        }
+                    },
+                    physics: {
+                        forceAtlas2Based: {
+                            gravitationalConstant: -26,
+                            centralGravity: 0.005,
+                            springLength: 230,
+                            springConstant: 0.18
+                        },
+                        maxVelocity: 146,
+                        solver: 'forceAtlas2Based',
+                        timestep: 0.35,
+                        stabilization: {iterations: 150}
+                    },
+                    interaction: {
+                        dragNodes: true,
+                        dragView: false,
+                        zoomView: false
+                    }
+                };
+
+                let network = new vis.Network(container, data, options);
+
+                network.on("click", function (params) {
+                    if (params.nodes.length > 0) {
+                        let nodeId = params.nodes[0];
+                        let node = data.nodes.find(n => n.id === nodeId);
+                        if (node) {
+                            if (node.group === 'name') {
+                                document.getElementById('nodeInfo').style.display = 'block';
+                                document.getElementById('nodeInfo').querySelector('.back-button').style.display = 'none';
+                                previousContent = '';
+                                document.getElementById('infoContent').innerHTML = `
+                                    <h3>${node.label}</h3>
+                                    <p><span>Title:</span> ${node.title.match(/Title: (.*?)<br>/)[1]}</p>
+                                    <p><span>Division:</span> ${node.title.match(/Division: (.*?)<br>/)[1]}</p>
+                                    <p><span>Program:</span> ${node.title.match(/Program: (.*?)<br>/)[1]}</p>
+                                    <p><span>Bio:</span> ${node.title.match(/Bio: (.*?)<br>/)[1]}</p>
+                                    <p><span>Email:</span> ${node.title.match(/Email: (.*?)<br>/)[1]}</p>
+                                    <p><span>Phone:</span> ${node.title.match(/Phone: (.*?)<br>/)[1]}</p>
+                                    <p><span>Other Skills:</span> ${node.title.match(/Other Skills: (.*?)$/)[1]}</p>
+                                `;
+                            } else if (node.group === 'skill') {
+                                let associatedNames = data.edges
+                                    .filter(edge => edge.to === nodeId)
+                                    .map(edge => {
+                                        let nameNode = data.nodes.find(n => n.id === edge.from);
+                                        return nameNode ? `<span class="name-link" data-id="${nameNode.id}">${nameNode.label}</span>` : '';
+                                    })
+                                    .join('<br>');
+
+                                document.getElementById('nodeInfo').style.display = 'block';
+                                document.getElementById('nodeInfo').querySelector('.back-button').style.display = 'none';
+                                previousContent = `
+                                    <h3>Skill: ${node.label}</h3>
+                                    <p><span>Names with this skill:</span><br> ${associatedNames}</p>
+                                `;
+                                document.getElementById('infoContent').innerHTML = previousContent;
+                            } else {
+                                document.getElementById('nodeInfo').style.display = 'none';
+                                document.getElementById('infoContent').innerHTML = '';
+                            }
+                        }
+                    } else {
+                        document.getElementById('nodeInfo').style.display = 'none';
+                        document.getElementById('infoContent').innerHTML = '';
+                    }
+                });
+
+                document.getElementById('nodeInfo').addEventListener('click', function (event) {
+                    if (event.target.classList.contains('name-link')) {
+                        let nodeId = event.target.getAttribute('data-id');
+                        let node = data.nodes.find(n => n.id === nodeId);
+                        if (node) {
+                            document.getElementById('nodeInfo').querySelector('.back-button').style.display = 'inline';
+                            document.getElementById('infoContent').innerHTML = `
+                                <h3>${node.label}</h3>
+                                <p><span>Title:</span> ${node.title.match(/Title: (.*?)<br>/)[1]}</p>
+                                <p><span>Division:</span> ${node.title.match(/Division: (.*?)<br>/)[1]}</p>
+                                <p><span>Program:</span> ${node.title.match(/Program: (.*?)<br>/)[1]}</p>
+                                <p><span>Bio:</span> ${node.title.match(/Bio: (.*?)<br>/)[1]}</p>
+                                <p><span>Email:</span> ${node.title.match(/Email: (.*?)<br>/)[1]}</p>
+                                <p><span>Phone:</span> ${node.title.match(/Phone: (.*?)<br>/)[1]}</p>
+                                <p><span>Other Skills:</span> ${node.title.match(/Other Skills: (.*?)$/)[1]}</p>
+                            `;
+                        }
+                    } else if (event.target.classList.contains('back-button')) {
+                        document.getElementById('infoContent').innerHTML = previousContent;
+                        document.getElementById('nodeInfo').querySelector('.back-button').style.display = 'none';
+                    } else if (event.target.classList.contains('close-button')) {
+                        document.getElementById('nodeInfo').style.display = 'none';
+                        document.getElementById('infoContent').innerHTML = '';
+                    }
+                });
+            } catch (error) {
+                console.error('Error loading graph data:', error);
+            }
+        }
+        loadGraph();
+    </script>
+</body>
+</html>
+
+
+
+<option value="Advanced Manufacturing">Advanced Manufacturing</option>
+                                                <option value="Analytics">Analytics</option>
+                                                <option value="Applied Machine Intelligence">Applied Machine Intelligence</option>
+                                                <option value="Applied Nutrition">Applied Nutrition</option>
+                                                <option value="Biological Science">Biological Science</option>
+                                                <option value="Biotechnology">Biotechnology</option>
+                                                <option value="Commerce and Economic Development">Commerce and Economic Development</option>
+                                                <option value="Computer Engineering Technology">Computer Engineering Technology</option>
+                                                <option value="Corporate & Organizational Communication">Corporate & Organizational Communication</option>
+                                                <option value="Criminal Justice">Criminal Justice</option>
+                                                <option value="Digital Communication and Media">Digital Communication and Media</option>
+                                                <option value="Digital Media">Digital Media</option>
+                                                <option value="Doctor of Education">Doctor of Education</option>
+                                                <option value="Doctor of Law and Policy">Doctor of Law and Policy</option>
+                                                <option value="Elementary Education">Elementary Education</option>
+                                                <option value="Electrical Engineering Technology">Electrical Engineering Technology</option>
+                                                <option value="Experiential Career Prep">Experiential Career Prep</option>
+                                                <option value="Finance and Accounting Mgt.">Finance and Accounting Mgt.</option>
+                                                <option value="Geospatial Services">Geospatial Services</option>
+                                                <option value="Global Social Enterprise Graduate Professional Certificates">Global Social Enterprise Graduate Professional Certificates</option>
+                                                <option value="Global Studies and International Relations">Global Studies and International Relations</option>
+                                                <option value="Health Management">Health Management</option>
+                                                <option value="Health Science">Health Science</option>
+                                                <option value="Healthcare Administration">Healthcare Administration</option>
+                                                <option value="Higher Education Administration">Higher Education Administration</option>
+                                                <option value="Homeland Security, Port Security">Homeland Security, Port Security</option>
+                                                <option value="Human Resources Management">Human Resources Management</option>
+                                                <option value="Informatics">Informatics</option>
+                                                <option value="Information Technology">Information Technology</option>
+                                                <option value="Insurance Analytics Management">Insurance Analytics Management</option>
+                                                <option value="Interdisciplinary Studies">Interdisciplinary Studies</option>
+                                                <option value="Leadership">Leadership</option>
+                                                <option value="Learning Experience Design and Technology">Learning Experience Design and Technology</option>
+                                                <option value="Management">Management</option>
+                                                <option value="Mathematics">Mathematics</option>
+                                                <option value="Mechanical Engineering Technology">Mechanical Engineering Technology</option>
+                                                <option value="Mechatronics">Mechatronics</option>
+                                                <option value="General Education">General Education</option>
+                                                <option value="Nonprofit Management">Nonprofit Management</option>
+                                                <option value="Organizational Leadership">Organizational Leadership</option>
+                                                <option value="Program and Portfolio Mgt">Program and Portfolio Mgt</option>
+                                                <option value="Project Management">Project Management</option>
+                                                <option value="Psychology">Psychology</option>
+                                                <option value="Public Relations Management">Public Relations Management</option>
+                                                <option value="Regulatory Affairs">Regulatory Affairs</option>
+                                                <option value="Regulatory Affairs of Food">Regulatory Affairs of Food</option>
+                                                <option value="Respiratory Care">Respiratory Care</option>
+                                                <option value="Sales Management">Sales Management</option>
+                                                <option value="Security and Intelligence Studies">Security and Intelligence Studies</option>
+                                                <option value="Sports Leadership">Sports Leadership</option>
+                                                <option value="Strategic Intelligence & Analysis">Strategic Intelligence & Analysis</option>
+                                                <option value="Teaching - Elementary">Teaching - Elementary</option>
+                                                <option value="Teaching - Secondary">Teaching - Secondary</option>
+                                                <option value="Technical Communication">Technical Communication</option>
+                                                <option value="Transitional Doctor of Physical Therapy">Transitional Doctor of Physical Therapy</option>
+                                                <option value="Learning & Instruction">Learning & Instruction</option>
+                                                <option value="Special Education">Special Education</option>

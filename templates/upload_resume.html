@@ -1,0 +1,98 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Resume</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.css">
+    <style>
+        .dropzone {
+            border: 2px dashed #007bff;
+            border-radius: 5px;
+            padding: 20px;
+            background: #f9f9f9;
+        }
+        .dropzone .dz-message {
+            font-size: 18px;
+            color: #007bff;
+        }
+        .btn-next {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        .btn-next.disabled {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>Upload Your Resumes</h1>
+        <form id="uploadForm" class="dropzone" action="{% url 'upload_file' %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="dz-message needsclick">
+                <i class="ki-duotone ki-file-up fs-3x text-primary"><span class="path1"></span><span class="path2"></span></i>
+                <div class="ms-4">
+                    <h3 class="fs-5 fw-bold text-gray-900 mb-1">Drop files here or click to upload.</h3>
+                    <span class="fs-7 fw-semibold text-gray-500">Upload files up to 5MB</span>
+                </div>
+            </div>
+        </form>
+        <div id="uploadStatus" class="mt-5"></div>
+    </div>
+
+    <a id="nextButton" href="#" class="btn btn-primary btn-next disabled">Next</a>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.js"></script>
+    <script>
+        Dropzone.options.uploadForm = {
+            url: '{% url 'upload_file' %}',
+            maxFilesize: 5,
+            addRemoveLinks: true,
+            acceptedFiles: '.pdf',
+            autoProcessQueue: true,
+            init: function() {
+                console.log('Dropzone initialized');
+                let fileDetails = [];
+                var myDropzone = this;
+
+                this.on("success", function(file, response) {
+                    console.log('Dropzone success event triggered');
+                    console.log('Server response:', response);
+                    if (response.file_details && response.file_details.length > 0) {
+                        console.log('Count:', response.file_details.length);
+                        fileDetails = response.file_details;
+                        // Save file details to session
+                        fetch('{% url "save_file_details" %}', {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRFToken': document.querySelector('input[name="csrfmiddlewaretoken"]').value,
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ file_details: fileDetails })
+                        }).then(response => response.json())
+                        .then(data => {
+                            console.log('File details saved:', data);
+                            updateNextButton();
+                        });
+                    }
+                });
+
+
+                function updateNextButton() {
+                    let nextButton = document.getElementById('nextButton');
+                    if (fileDetails.length > 0) {
+                        nextButton.href = `{% url 'edit_file' file_index=0 %}`;
+                        nextButton.classList.remove('disabled');
+                    }
+                }
+            }
+        };
+
+    </script>
+</body>
+</html>

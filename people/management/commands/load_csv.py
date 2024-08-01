@@ -10,10 +10,10 @@ class Command(BaseCommand):
             reader = csv.DictReader(file)
             for row in reader:
                 Person.objects.update_or_create(
+                    unique_id=row['unique_id'],
                     name=row['Name'],
                     defaults={
                         'email': row['Email'],
-                        'phone': row['Phone'],
                         'title': row['Title'],
                         'division': row['Division'],
                         'program': row['Program'],

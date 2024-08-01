@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Search Results</title>
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -102,11 +102,10 @@
         </form>
         {% if results %}
             {% for person in results %}
-                <a href="{% url 'person_detail' person.pk %}" class="result-box">
-                    <div class="result-header">{{ person.name }} - {{ person.title }}</div>
+                <a href="{% url 'person_detail' person.name person.unique_id|slice:":8" %}" class="result-box">
+                    <div class="result-header">{{ person.name }}</div>
                     <div class="result-details">
-                        <span>Division: {{ person.division }}</span>
-                        <span>Program: {{ person.program }}</span>
+                        <span>{{ person.title }}, {{ person.division }}</span>
                     </div>
                 </a>
             {% endfor %}
