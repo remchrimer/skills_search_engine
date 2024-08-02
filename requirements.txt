@@ -1,0 +1,5 @@
+Django~=4.2.14
+requests~=2.32.3
+nltk~=3.8.1
+pypdf2~=3.0.1
+pathlib~=1.0.1

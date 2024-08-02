@@ -192,7 +192,7 @@
           <h2>Filters</h2>
           <form action="{% url 'search' %}" method="get">
               <div class="form-group">
-                  <label for="title">Title:</label>
+                  <label for="title">Role:</label>
                   <select class="form-control" id="title" name="title">
                       <option value="">Select Role</option>
                       <option value="Faculty" {% if title_filter == 'Faculty' %}selected{% endif %}>Faculty</option>
