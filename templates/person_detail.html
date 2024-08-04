@@ -248,26 +248,15 @@
                         zoomView: false
                     }
                 };
-
-
-                // Remove duplicates from nodes
                 let uniqueNodes = {};
                 data.nodes.forEach(node => {
                     if (!uniqueNodes[node.id]) {
                         uniqueNodes[node.id] = node;
                     }
                 });
-
-
-                // Convert the unique nodes object back to an array
                 let nodes = Object.values(uniqueNodes);
-
-                // Customize nodes to ensure no tooltips are set
                 data.nodes.forEach(node => { node.title = node.name;});
-
                 let network = new vis.Network(container, { nodes: nodes, edges: data.edges }, options);
-
-
                 network.on("click", function (params) {
                     if (params.nodes.length > 0) {
                         let nodeId = params.nodes[0];
@@ -277,6 +266,10 @@
                                 let personName = encodeURIComponent(node.label);
                                 let uniqueIdPart = encodeURIComponent(node.id);
                                 window.location.href = `/person/${personName}/${uniqueIdPart}/`;
+                            }
+                            else if (node.group === 'skill') {
+                                let skill = encodeURIComponent(node.label);
+                                window.location.href = `/search/?q=${skill}`;
                             }
                         }
                     } else {

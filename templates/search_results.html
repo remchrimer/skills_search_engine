@@ -191,6 +191,7 @@
           <a href="{% url 'index' %}"><img src="{% static 'images/Northeastern_logo.svg' %}" alt="Logo" class="logo"></a>
           <h2>Filters</h2>
           <form action="{% url 'search' %}" method="get">
+              <input type="hidden" name="q" value="{{ query }}">
               <div class="form-group">
                   <label for="title">Role:</label>
                   <select class="form-control" id="title" name="title">
@@ -282,6 +283,9 @@
           <h1>Search Results</h1>
           <form action="{% url 'search' %}" method="get" class="search-bar">
               <input type="text" name="q" value="{{ query }}" placeholder="Search for skills..." />
+              <input type="hidden" name="title" value="{{ title_filter }}">
+              <input type="hidden" name="division" value="{{ division_filter }}">
+              <input type="hidden" name="program" value="{{ program_filter }}">
               <button type="submit">Search</button>
           </form>
           {% if results %}
