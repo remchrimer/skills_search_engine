@@ -195,7 +195,7 @@
               <div class="form-group">
                   <label for="title">Role:</label>
                   <select class="form-control" id="title" name="title">
-                      <option value="">Select Role</option>
+                      <option value="">All Role</option>
                       <option value="Faculty" {% if title_filter == 'Faculty' %}selected{% endif %}>Faculty</option>
                       <option value="Staff" {% if title_filter == 'Staff' %}selected{% endif %}>Staff</option>
                       <option value="Administrator" {% if title_filter == 'Administrator' %}selected{% endif %}>Administrator</option>
@@ -205,7 +205,7 @@
               <div class="form-group">
                   <label for="division">Division:</label>
                   <select class="form-control" id="division" name="division">
-                      <option value="">Select Division</option>
+                      <option value="">All Division</option>
                       <option value="Undergraduate" {% if division_filter == 'Undergraduate' %}selected{% endif %}>Undergraduate</option>
                       <option value="Graduate Professional" {% if division_filter == 'Graduate Professional' %}selected{% endif %}>Graduate Professional</option>
                       <option value="Pathways" {% if division_filter == 'Pathways' %}selected{% endif %}>Pathways</option>
@@ -216,7 +216,7 @@
               <div class="form-group">
                   <label for="program">Program:</label>
                   <select class="form-control" id="program" name="program">
-                      <option value="">Select Program</option>
+                      <option value="">All Program</option>
                       <option value="Advanced Manufacturing" {% if program_filter == 'Advanced Manufacturing' %}selected{% endif %}>Advanced Manufacturing</option>
                       <option value="Analytics" {% if file_detail.program == 'Analytics' %}selected{% endif %}>Analytics</option>
                     <option value="Applied Machine Intelligence" {% if file_detail.program == 'Applied Machine Intelligence' %}selected{% endif %}>Applied Machine Intelligence</option>
