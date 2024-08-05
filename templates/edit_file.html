@@ -43,6 +43,10 @@
         {% if error %}
             <div class="alert alert-danger">{{ error }}</div>
         {% endif %}
+        <div class="form-group">
+            <label for="file_name">File Name:</label>
+            <p id="file_name">{{ file_name }}</p>
+        </div>
         <form method="post" action="{% url 'save_details' %}">
             {% csrf_token %}
             <input type="hidden" name="file_index" value="{{ file_index }}">

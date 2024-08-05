@@ -145,19 +145,26 @@ def upload_resume(request):
 
 def edit_file(request, file_index):
     file_details = request.session.get('file_details', [])
+    results_details = request.session.get('results', [])
     print(f"EDIT FILE: {file_details}")
-
+    print(f"EDIT FILE Result: {results_details}")
     if file_index < 0 or file_index >= len(file_details):
         return render(request, 'edit_file.html', {'error': 'Invalid file index'})
 
     file_detail = file_details[file_index]
-    print(len(file_details))
+    print(file_index)
+    if file_index < len(results_details):
+        file_name = results_details[file_index]['filename']
+    else:
+        file_name = 'Unknown File'
     context = {
+        'file_name': file_name,
         'file_detail': file_detail,
         'file_index': file_index,
         'file_count': len(file_details)
     }
     return render(request, 'edit_file.html', context)
+
 
 @csrf_exempt
 def upload_file(request):
@@ -188,10 +195,12 @@ def upload_file(request):
                 file_details.append(data)
             except Exception as e:
                 results.append({'filename': file.name, 'status': 'error', 'error': str(e)})
+                file_details.append({})
 
         request.session['file_details'] = file_details
-        print(results)
-        print(file_details)
+        request.session['results'] = results
+        print(request.session['file_details'])
+        print(request.session['results'])
         return JsonResponse({'results': results, 'file_details': file_details})
     else:
         return JsonResponse({'error': 'Invalid request method'})
@@ -268,7 +277,10 @@ def save_file_details(request):
     if request.method == 'POST':
         data = json.loads(request.body)
         file_details = request.session.get('file_details', [])
+
+        results_details = data.get('results', [])
         new_file_details = data.get('file_details', [])
+
         file_details_map = {file_detail['id']: file_detail for file_detail in file_details if 'id' in file_detail}
         for file_detail in new_file_details:
             file_id = file_detail.get('id')
@@ -277,7 +289,14 @@ def save_file_details(request):
                 file_detail['id'] = file_id
             file_details_map[file_id] = file_detail
         file_details = list(file_details_map.values())
+
+        results_map = {result['filename']: result for result in results_details}
+        for result in results_details:
+            results_map[result['filename']] = result
+        results_details = list(results_map.values())
+
         request.session['file_details'] = file_details
+        request.session['results'] = results_details
         return JsonResponse({'message': 'File details saved'})
     else:
         return JsonResponse({'error': 'Invalid request method'})
