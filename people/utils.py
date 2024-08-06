@@ -1,4 +1,5 @@
 import re
+import threading
 import requests
 import json
 from PyPDF2 import PdfReader
@@ -7,6 +8,9 @@ import en_core_web_sm
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
+
+nltk_lock = threading.Lock()
+
 
 nltk.download('punkt', quiet=True)
 nltk.download('stopwords', quiet=True)
@@ -62,10 +66,11 @@ def preprocess_text(text):
     return text
 
 def tokenize_and_process(text):
-    tokens = word_tokenize(text)
-    stop_words = set(stopwords.words('english'))
-    lemmatizer = WordNetLemmatizer()
-    processed_tokens = [lemmatizer.lemmatize(token) for token in tokens if token not in stop_words]
+    with nltk_lock:
+        tokens = word_tokenize(text)
+        stop_words = set(stopwords.words('english'))
+        lemmatizer = WordNetLemmatizer()
+        processed_tokens = [lemmatizer.lemmatize(token) for token in tokens if token not in stop_words]
     return processed_tokens
 
 def extract_personal_info(resume_text):
