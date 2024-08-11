@@ -47,7 +47,6 @@ def person_detail(request, name, unique_id_part):
 
 def get_graph_data(request):
     person_name = request.GET.get('person', None)
-    CSV_FILE_PATH = 'data/people.csv'
 
     nodes = []
     edges = []
@@ -56,23 +55,23 @@ def get_graph_data(request):
     name_to_info = {}
     name_to_unique_id = {}
 
-    with open(CSV_FILE_PATH, mode='r') as file:
-        reader = csv.DictReader(file)
-        for row in reader:
-            name = row['Name']
-            unique_id = row['unique_id']
-            top_skills = [skill.strip() for skill in row['Top Skills'].split(',')][:5]
-            name_to_skills[name] = top_skills
-            name_to_info[name] = {
-                'Title': row.get('Title', 'N/A'),
-                'Division': row.get('Division', 'N/A'),
-                'Program': row.get('Program', 'N/A'),
-                'Bio': row.get('Bio', 'N/A'),
-                'Email': row.get('Email', 'N/A'),
-                'Other Skills': row.get('Other Skills', 'N/A')
-            }
-            name_to_unique_id[name] = unique_id
-            skill_set.update(top_skills)
+    people = Person.objects.all()
+
+    for person in people:
+        name = person.name
+        unique_id = person.unique_id
+        top_skills = [skill.strip() for skill in person.top_skills.split(',')][:5]
+        name_to_skills[name] = top_skills
+        name_to_info[name] = {
+            'Title': person.title or 'N/A',
+            'Division': person.division or 'N/A',
+            'Program': person.program or 'N/A',
+            'Bio': person.bio or 'N/A',
+            'Email': person.email or 'N/A',
+            'Other Skills': person.other_skills or 'N/A'
+        }
+        name_to_unique_id[name] = unique_id
+        skill_set.update(top_skills)
 
     if person_name:
         person_name = person_name.strip()
@@ -231,11 +230,24 @@ def extract_text_from_pdf(pdf_file):
         text += page.extract_text()
     return text
 
-def save_to_csv(name, email, title, division, program, bio, top_skills, other_skills, unique_id):
-    with open('data/people.csv', mode='a', newline='') as file:
-        writer = csv.writer(file)
-        print(f"final: {unique_id}")
-        writer.writerow([unique_id, name, email, title, division, program, bio, ", ".join(top_skills), ", ".join(other_skills)])
+def save_to_database(name, email, title, division, program, bio, top_skills, other_skills, unique_id):
+    person, created = Person.objects.update_or_create(
+        unique_id=unique_id,
+        defaults={
+            'name': name,
+            'email': email,
+            'title': title,
+            'division': division,
+            'program': program,
+            'bio': bio,
+            'top_skills': ', '.join(top_skills),
+            'other_skills': ', '.join(other_skills)
+        }
+    )
+    if created:
+        print(f"New entry created: {unique_id}")
+    else:
+        print(f"Existing entry updated: {unique_id}")
 
 from django.urls import reverse
 @csrf_exempt
@@ -254,7 +266,7 @@ def save_details(request):
 
         try:
             print(f"Saving details with unique_id: {unique_id}")
-            save_to_csv(name, email, title, division, program, bio, top_skills, other_skills, unique_id)
+            save_to_database(name, email, title, division, program, bio, top_skills, other_skills, unique_id)
             file_index = int(request.POST.get('file_index', 0))
             file_details = request.session.get('file_details', [])
             file_count = len(file_details)
