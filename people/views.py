@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
-from .models import Person
+from .models import Person, Skill
 import csv
 
 def index(request):
@@ -42,7 +42,13 @@ def search(request):
 
 def person_detail(request, name, unique_id_part):
     person = get_object_or_404(Person, name=name, unique_id__startswith=unique_id_part)
-    return render(request, 'person_detail.html', {'person': person})
+    # return render(request, 'person_detail.html', {'person': person})
+    top_skills_list = [skill.strip() for skill in person.top_skills.split(',')] if person.top_skills else []
+
+    return render(request, 'person_detail.html', {
+        'person': person,
+        'top_skills_list': top_skills_list
+    })
 
 
 def get_graph_data(request):
@@ -312,3 +318,95 @@ def save_file_details(request):
         return JsonResponse({'message': 'File details saved'})
     else:
         return JsonResponse({'error': 'Invalid request method'})
+def skill_suggestions(request):
+    q = request.GET.get('q', '')
+    skills = Skill.objects.filter(name__icontains=q).values_list('name', flat=True)
+    return JsonResponse({'suggestions': list(skills)})
+
+def edit_person(request, unique_id):
+    person = get_object_or_404(Person, unique_id=unique_id)
+
+    if request.method == 'POST':
+        top_skills = request.POST.get('top_skills', '')
+        other_skills = request.POST.get('other_skills', '')
+
+        # Split and clean the skills (remove whitespace, etc.)
+        top_skills_list = [skill.strip() for skill in top_skills.split(',') if skill.strip()]
+        other_skills_list = [skill.strip() for skill in other_skills.split(',') if skill.strip()]
+
+        # Get valid skills from the database
+        valid_skills = set(Skill.objects.values_list('name', flat=True))
+
+        if all(skill in valid_skills for skill in top_skills_list + other_skills_list):
+            person.name = request.POST.get('name')
+            person.title = request.POST.get('title')
+            person.division = request.POST.get('division')
+            person.program = request.POST.get('program')
+            person.email = request.POST.get('email')
+            person.bio = request.POST.get('bio')
+            person.top_skills = ','.join(top_skills_list)
+            person.other_skills = ','.join(other_skills_list)
+            person.save()
+            return redirect('person_detail', name=person.name, unique_id_part=person.unique_id)
+        else:
+            # Handle the case where skills are not valid
+            return render(request, 'edit_person.html', {
+                'person': person,
+                'error': 'Invalid skills provided.',
+                'top_skills': top_skills_list,
+                'other_skills': other_skills_list,
+            })
+
+    # For GET requests, split the skills to pass them as lists to the template
+    top_skills = person.top_skills.split(',') if person.top_skills else []
+    other_skills = person.other_skills.split(',') if person.other_skills else []
+
+    return render(request, 'edit_person.html', {
+        'person': person,
+        'top_skills': top_skills,
+        'other_skills': other_skills,
+    })
+
+# def edit_person(request, unique_id):
+#     person = get_object_or_404(Person, unique_id=unique_id)
+#
+#     if request.method == 'POST':
+#         top_skills = request.POST.get('top_skills')
+#         other_skills = request.POST.get('other_skills')
+#
+#         # Split and clean the skills (remove whitespace, etc.)
+#         top_skills_list = [skill.strip() for skill in top_skills.split(',') if skill.strip()]
+#         other_skills_list = [skill.strip() for skill in other_skills.split(',') if skill.strip()]
+#
+#         # Get valid skills from the database
+#         valid_skills = set(Skill.objects.values_list('name', flat=True))
+#
+#         if all(skill in valid_skills for skill in top_skills_list + other_skills_list):
+#             person.name = request.POST.get('name')
+#             person.title = request.POST.get('title')
+#             person.division = request.POST.get('division')
+#             person.program = request.POST.get('program')
+#             person.email = request.POST.get('email')
+#             person.bio = request.POST.get('bio')
+#             person.top_skills = ','.join(top_skills_list)
+#             person.other_skills = ','.join(other_skills_list)
+#             person.save()
+#             return redirect('person_detail', name=person.name, unique_id_part=person.unique_id)
+#         else:
+#             # Handle the case where skills are not valid
+#             return render(request, 'edit_person.html', {
+#                 'person': person,
+#                 'error': 'Invalid skills provided.',
+#                 'top_skills': top_skills_list,
+#                 'other_skills': other_skills_list,
+#             })
+#
+#     # For GET requests, split the skills to pass them as lists to the template
+#     top_skills = person.top_skills.split(',') if person.top_skills else []
+#     other_skills = person.other_skills.split(',') if person.other_skills else []
+#
+#     return render(request, 'edit_person.html', {
+#         'person': person,
+#         'top_skills': top_skills,
+#         'other_skills': other_skills,
+#     })

@@ -7,16 +7,19 @@
     <title>{{ person.name }} - Details</title>
     <link rel="stylesheet" href="{% static 'styles.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
     <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
     <style>
+        /* Your existing CSS */
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
             margin: 0;
             padding: 0;
         }
-
         .person-detail-container {
             max-width: 800px;
             margin: 20px auto;
@@ -26,14 +29,12 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             position: relative;
         }
-
         .logo {
             width: 150px;
             height: auto;
             display: block;
             margin: 0 auto 20px;
         }
-
         .back-button {
             position: absolute;
             top: 20px;
@@ -44,32 +45,26 @@
             font-size: 24px;
             cursor: pointer;
         }
-
         .back-button:hover {
             color: #333;
         }
-
         h1 {
             margin-bottom: 20px;
         }
-
         p {
             margin: 10px 0;
             font-size: 1.1em;
         }
-
         p strong {
             display: block;
             margin-bottom: 5px;
             font-size: 1.2em;
         }
-
         .button-container {
             display: flex;
             justify-content: center;
             margin-top: 20px;
         }
-
         .view-network-button {
             display: inline-flex;
             align-items: center;
@@ -82,15 +77,12 @@
             text-decoration: none;
             font-size: 16px;
         }
-
         .view-network-button i {
             margin-right: 8px;
         }
-
         .view-network-button:hover {
             background-color: #0056b3;
         }
-
         .modal {
             display: none;
             position: fixed;
@@ -102,7 +94,6 @@
             overflow: auto;
             background-color: rgba(0,0,0,0.4);
         }
-
         .modal-content {
             background-color: #fefefe;
             margin: 5% auto;
@@ -110,28 +101,46 @@
             border: 1px solid #888;
             width: 80%;
         }
-
         .close {
             color: #aaa;
             float: right;
             font-size: 28px;
             font-weight: bold;
         }
-
         .close:hover,
         .close:focus {
             color: black;
             text-decoration: none;
             cursor: pointer;
         }
-
         #networkContainer {
             width: 100%;
             height: 500px;
         }
-
         #nodeInfo {
             margin-top: 20px;
+        }
+        #editModal .form-group {
+            margin-bottom: 15px;
+        }
+        #editModal label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        #editModal input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        #editModal ul {
+            list-style: none;
+            padding: 0;
+        }
+        #editModal ul li {
+            background-color: #e1e1e1;
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 5px;
         }
     </style>
 </head>
@@ -140,6 +149,11 @@
         <a href="{% url 'index' %}"><img src="{% static 'images/Northeastern_logo.svg' %}" alt="Logo" class="logo"></a>
         <button onclick="history.back()" class="back-button">&larr;</button>
         <h1>{{ person.name }}</h1>
+        <div class="button-container">
+            <button id="openModalBtn" class="view-network-button" data-person="{{ person.name }}">
+                <i class="fas fa-network-wired"></i> View Network
+            </button>
+        </div>
         <p><strong>Title:</strong> {{ person.title }}</p>
         <p><strong>Division:</strong> {{ person.division }}</p>
         <p><strong>Program:</strong> {{ person.program }}</p>
@@ -147,17 +161,16 @@
         <p><strong>Bio:</strong> {{ person.bio }}</p>
         <p><strong>Top Skills:</strong> {{ person.top_skills }}</p>
         <p><strong>All Skills:</strong> {{ person.other_skills }}</p>
-        <div class="button-container">
-            <button id="openModalBtn" class="view-network-button" data-person="{{ person.name }}">
-                <i class="fas fa-network-wired"></i> View Network
-            </button>
-        </div>
+        <a href="{% url 'edit_person' person.unique_id %}" class="view-network-button">
+            <i class="fas fa-edit"></i> Edit Details
+        </a>
     </div>
 
-    <!-- The Modal -->
+
+    <!-- Existing Network Modal -->
     <div id="myModal" class="modal">
         <div class="modal-content">
-            <span class="close">&times;</span>
+            <span id="networkModalClose" class="close">&times;</span>
             <div id="networkContainer"></div>
             <div id="nodeInfo" style="display: none;">
                 <div id="infoContent"></div>
@@ -165,45 +178,38 @@
         </div>
     </div>
 
-   <script>
+    <script>
         $(document).ready(function() {
-            var modal = document.getElementById("myModal");
-            var btn = document.getElementById("openModalBtn");
-            var span = document.getElementsByClassName("close")[0];
+        // Existing network modal functionality
+        var networkModal = document.getElementById("myModal");
+        var networkBtn = document.getElementById("openModalBtn");
+        var networkSpan = document.getElementById("networkModalClose");
 
+        networkBtn.onclick = function() {
+            networkModal.style.display = "block";
+            loadGraph();
+        }
 
-            btn.onclick = function() {
-                modal.style.display = "block";
-                loadGraph();
+        networkSpan.onclick = function() {
+            networkModal.style.display = "none";
+        }
+
+        window.onclick = function(event) {
+            if (event.target == networkModal) {
+                networkModal.style.display = "none";
             }
+        }
 
-
-            span.onclick = function() {
-                modal.style.display = "none";
-            }
-
-
-            window.onclick = function(event) {
-                if (event.target == modal) {
-                    modal.style.display = "none";
-                }
-            }
-
-
-            async function loadGraph() {
+        async function loadGraph() {
             try {
                 const person = document.getElementById("openModalBtn").getAttribute('data-person');
-
-
                 if (!person) {
                     console.error('No person parameter found');
                     return;
                 }
 
-
                 let response = await fetch(`/get_graph_data/?person=${encodeURIComponent(person)}`);
                 let data = await response.json();
-
 
                 let container = document.getElementById('networkContainer');
                 let options = {
@@ -212,7 +218,7 @@
                         size: 30,
                         font: {
                             size: 12,
-                            color: '#005377'
+                            color: '#000000'
                         },
                         borderWidth: 2
                     },
@@ -221,11 +227,11 @@
                     },
                     groups: {
                         skill: {
-                            color: { background: '#97C2FC', border: '#97b1fc' },
+                            color: { background: '#e17e8f', border: '#c8102e' },
                             shape: 'dot'
                         },
                         name: {
-                            color: { background: '#E1D69F', border: '#d5c67a' },
+                            color: { background: '#E1D69F', border: '#a4804a' },
                             shape: 'box'
                         }
                     },
@@ -254,7 +260,7 @@
                     }
                 });
                 let nodes = Object.values(uniqueNodes);
-                data.nodes.forEach(node => { node.title = node.name;});
+                data.nodes.forEach(node => { node.title = node.name; });
                 let network = new vis.Network(container, { nodes: nodes, edges: data.edges }, options);
                 network.on("click", function (params) {
                     if (params.nodes.length > 0) {
@@ -276,12 +282,11 @@
                     }
                 });
 
-
             } catch (error) {
                 console.error('Error loading graph data:', error);
             }
         }
-        });
-   </script>
+    });
+    </script>
 </body>
 </html>

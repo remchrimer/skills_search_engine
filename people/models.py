@@ -13,3 +13,13 @@ class Person(models.Model):
     bio = models.TextField(blank=True, null=True)
     def __str__(self):
         return self.name
+
+class Skill(models.Model):
+    skill_id = models.CharField(max_length=255, unique=True)  # data/id
+    name = models.CharField(max_length=255)  # data/name
+    info_url = models.URLField(max_length=500, blank=True, null=True)  # data/infoUrl
+    skill_type_id = models.CharField(max_length=255, blank=True, null=True)  # data/type/id
+    skill_type_name = models.CharField(max_length=255, blank=True, null=True)  # data/type/name
+
+    def __str__(self):
+        return self.name

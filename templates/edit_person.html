@@ -1,0 +1,243 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit {{ person.name }} - Details</title>
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .edit-person-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .logo {
+            width: 150px;
+            height: auto;
+            display: block;
+            margin: 0 auto 20px;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        textarea {
+            resize: vertical;
+        }
+        .form-group button {
+            padding: 10px 20px;
+            background-color: #000;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .form-group button:hover {
+            background-color: #333;
+        }
+        .skill-block {
+            display: inline-block;
+            background-color: #e0e0e0;
+            padding: 5px 10px;
+            border-radius: 5px;
+            margin: 5px;
+            position: relative;
+        }
+        .skill-block .remove-btn {
+            position: absolute;
+            right: 5px;
+            top: 0;
+            cursor: pointer;
+            font-size: 14px;
+            color: #ff0000;
+        }
+        .add-skill-section {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="edit-person-container">
+        <a href="{% url 'index' %}"><img src="{% static 'images/Northeastern_logo.svg' %}" alt="Logo" class="logo"></a>
+        <h1>Edit Details for {{ person.name }}</h1>
+        <form method="post" action="{% url 'edit_person' person.unique_id %}" id="edit-person-form">
+            {% csrf_token %}
+            <input type="hidden" name="unique_id" value="{{ person.unique_id }}">
+            <input type="hidden" id="top_skills_input" name="top_skills" value="{{ person.top_skills }}">
+            <input type="hidden" id="other_skills_input" name="other_skills" value="{{ person.other_skills }}">
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" value="{{ person.name }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="title">Title:</label>
+                <input type="text" id="title" name="title" value="{{ person.title }}">
+            </div>
+
+            <div class="form-group">
+                <label for="division">Division:</label>
+                <input type="text" id="division" name="division" value="{{ person.division }}">
+            </div>
+
+            <div class="form-group">
+                <label for="program">Program:</label>
+                <input type="text" id="program" name="program" value="{{ person.program }}">
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="text" id="email" name="email" value="{{ person.email }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="bio">Bio:</label>
+                <textarea id="bio" name="bio">{{ person.bio }}</textarea>
+            </div>
+
+          <div class="form-group">
+                <label>Top Skills:</label>
+                <div id="top-skills-container">
+                    {% for skill in top_skills %}
+                        <div class="skill-block">
+                            {{ skill }}
+                            <span class="remove-btn" data-skill="{{ skill }}">x</span>
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="add-skill-section">
+                    <label for="new_top_skill">Add Top Skill:</label>
+                    <input type="text" id="new_top_skill">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Other Skills:</label>
+                <div id="other-skills-container">
+                    {% for skill in other_skills %}
+                        <div class="skill-block">
+                            {{ skill }}
+                            <span class="remove-btn" data-skill="{{ skill }}">x</span>
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="add-skill-section">
+                    <label for="new_other_skill">Add Other Skill:</label>
+                    <input type="text" id="new_other_skill">
+                </div>
+            </div>
+
+
+
+            <div class="form-group">
+                <button type="submit">Save Changes</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            function updateHiddenInputs() {
+                var topSkills = [];
+                $("#top-skills-container .skill-block").each(function() {
+                    var skillText = $(this).contents().filter(function() {
+                        return this.nodeType === Node.TEXT_NODE;
+                    }).text().trim();
+                    if (skillText) {
+                        topSkills.push(skillText);
+                    }
+                });
+                $("#top_skills_input").val(topSkills.join(','));
+
+                var otherSkills = [];
+                $("#other-skills-container .skill-block").each(function() {
+                    var skillText = $(this).contents().filter(function() {
+                        return this.nodeType === Node.TEXT_NODE;
+                    }).text().trim();
+                    if (skillText) {
+                        otherSkills.push(skillText);
+                    }
+                });
+                $("#other_skills_input").val(otherSkills.join(','));
+            }
+
+
+            $("#edit-person-form").on("submit", function(event) {
+                updateHiddenInputs();
+            });
+
+            // Autocomplete for adding new skills
+            $("#new_top_skill, #new_other_skill").autocomplete({
+                source: function(request, response) {
+                    $.ajax({
+                        url: "{% url 'skill_suggestions' %}",
+                        dataType: "json",
+                        data: {
+                            q: request.term
+                        },
+                        success: function(data) {
+                            response(data.suggestions);
+                        }
+                    });
+                }
+            });
+
+            // Add skill to top skills list
+            $("#new_top_skill").on("autocompleteselect", function(event, ui) {
+                var skill = ui.item.value;
+                var topSkillsCount = $("#top-skills-container .skill-block").length;
+
+                if (topSkillsCount < 5) {  // Check if less than 5 skills are present
+                    if (!$("#top-skills-container").find(".skill-block:contains('" + skill + "')").length) {
+                        $("#top-skills-container").append('<div class="skill-block">' + skill + '<span class="remove-btn" data-skill="' + skill + '">x</span></div>');
+                    }
+                } else {
+                    alert("You can only add up to 5 top skills.");
+                }
+
+                $(this).val("");
+            });
+
+            // Add skill to other skills list
+            $("#new_other_skill").on("autocompleteselect", function(event, ui) {
+                var skill = ui.item.value;
+                if (!$("#other-skills-container").find(".skill-block:contains('" + skill + "')").length) {
+                    $("#other-skills-container").append('<div class="skill-block">' + skill + '<span class="remove-btn" data-skill="' + skill + '">x</span></div>');
+                }
+                $(this).val("");
+            });
+
+            // Remove skill from list
+            $(document).on("click", ".remove-btn", function() {
+                $(this).parent().remove();
+            });
+        });
+    </script>
+</body>
+</html>

@@ -27,10 +27,29 @@
         .btn-next.disabled {
             display: none;
         }
+        .logo {
+            width: 20%; /* Adjusts the width as a percentage of the parent container */
+            height: auto; /* Keeps the aspect ratio */
+            display: block;
+            margin: 0 auto 20px;
+        }
+
+        @media (max-width: 768px) {
+            .logo {
+                width: 30%; /* Larger percentage on smaller screens */
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo {
+                width: 50%; /* Even larger percentage on very small screens */
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container mt-5">
+        <a href="{% url 'index' %}"><img src="{% static 'images/Northeastern_logo.svg' %}" alt="Logo" class="logo"></a>
         <h1>Upload Your Resumes</h1>
         <form id="uploadForm" class="dropzone" action="{% url 'upload_file' %}" method="post" enctype="multipart/form-data">
             {% csrf_token %}

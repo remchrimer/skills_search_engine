@@ -30,5 +30,6 @@ urlpatterns = [
     path('save_details/', save_details, name='save_details'),
     path('edit_file/<int:file_index>/', edit_file, name='edit_file'),
     path('save_file_details/', save_file_details, name='save_file_details'),
+    path('edit_person/<str:unique_id>/', edit_person, name='edit_person'),
+    path('skill-suggestions/', skill_suggestions, name='skill_suggestions'),
 ]
-
