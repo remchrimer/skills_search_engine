@@ -13,158 +13,206 @@
     <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
     <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
     <style>
-        /* Your existing CSS */
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-        }
-        .person-detail-container {
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            position: relative;
-        }
-        .logo {
-            width: 150px;
-            height: auto;
-            display: block;
-            margin: 0 auto 20px;
-        }
-        .back-button {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            background: none;
-            border: none;
-            color: black;
-            font-size: 24px;
-            cursor: pointer;
-        }
-        .back-button:hover {
-            color: #333;
-        }
-        h1 {
-            margin-bottom: 20px;
-        }
-        p {
-            margin: 10px 0;
-            font-size: 1.1em;
-        }
-        p strong {
-            display: block;
-            margin-bottom: 5px;
-            font-size: 1.2em;
-        }
-        .button-container {
-            display: flex;
-            justify-content: center;
-            margin-top: 20px;
-        }
-        .view-network-button {
-            display: inline-flex;
-            align-items: center;
-            padding: 10px 20px;
-            background-color: #000000;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            text-decoration: none;
-            font-size: 16px;
-        }
-        .view-network-button i {
-            margin-right: 8px;
-        }
-        .view-network-button:hover {
-            background-color: #0056b3;
-        }
-        /* Modal Background */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.6); /* Slightly darker background */
-        }
+    /* Your existing CSS */
+body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background: url('{% static 'images/neu_isec.jpg' %}') no-repeat center center fixed; /* Set your background image here */
+        background-size: cover; /* Make sure the background covers the entire page */
+        color: #333;
+    }
+    .person-detail-container {
+        max-width: 1000px;
+        margin: 80px auto 20px auto; /* Adjusted margin to create space above */
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        position: relative;
+        top: -40px; /* Slightly raise the container to reveal background */
+    }
+    .logo {
+        width: 150px;
+        height: auto;
+        display: block;
+        margin: 0 auto 20px;
+    }
+    .back-button {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        background: none;
+        border: none;
+        color: black;
+        font-size: 24px;
+        cursor: pointer;
+    }
+    .back-button:hover {
+        color: #333;
+    }
+    h1 {
+        margin-bottom: 20px;
+    }
+    .section-box {
+        background-color: #f9f9f9;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 15px;
+    }
+    .section-box h2 {
+        margin-top: 0;
+    }
+    .button-container {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+    }
+    .view-network-button {
+        display: inline-flex;
+        align-items: center;
+        padding: 10px 20px;
+        background-color: #000000;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        text-decoration: none;
+        font-size: 16px;
+        margin-bottom: 40px;
+    }
+    .view-network-button i {
+        margin-right: 8px;
+    }
+    .view-network-button:hover {
+        background-color: #0056b3;
+    }
+    /* Modal Background */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.6); /* Slightly darker background */
+    }
 
-        /* Modal Content */
-        .modal-content {
-            background-color: #ffffff;
-            margin: 5% auto;
-            padding: 20px;
-            border-radius: 12px; /* Rounded corners */
-            width: 80%;
-            max-width: 900px; /* Maximum width */
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Shadow for depth */
-            animation: fadeIn 0.3s ease-out; /* Fade-in effect */
-        }
+    /* Modal Content */
+    .modal-content {
+        background-color: #ffffff;
+        margin: 5% auto;
+        padding: 20px;
+        border-radius: 12px; /* Rounded corners */
+        width: 80%;
+        max-width: 900px; /* Maximum width */
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Shadow for depth */
+        animation: fadeIn 0.3s ease-out; /* Fade-in effect */
+    }
 
-        /* Close Button */
-        .close {
-            color: #333; /* Darker color for better visibility */
-            float: right;
-            font-size: 32px; /* Larger size */
-            font-weight: bold;
-            cursor: pointer;
-        }
+    /* Close Button */
+    .close {
+        color: #333; /* Darker color for better visibility */
+        float: right;
+        font-size: 32px; /* Larger size */
+        font-weight: bold;
+        cursor: pointer;
+    }
 
-        /* Close Button Hover Effect */
-        .close:hover,
-        .close:focus {
-            color: #ff0000; /* Red color on hover */
-            text-decoration: none;
-        }
+    /* Close Button Hover Effect */
+    .close:hover,
+    .close:focus {
+        color: #ff0000; /* Red color on hover */
+        text-decoration: none;
+    }
 
-        /* Fade-in Animation */
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
+    /* Fade-in Animation */
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
 
-        /* Network Container */
-        #networkContainer {
-            width: 100%;
-            height: 500px;
-            border-radius: 8px; /* Rounded corners */
-            overflow: hidden; /* Hide overflow */
-        }
+    /* Network Container */
+    #networkContainer {
+        width: 100%;
+        height: 500px;
+        border-radius: 8px; /* Rounded corners */
+        overflow: hidden; /* Hide overflow */
+    }
 
-        /* Node Info Section */
-        #nodeInfo {
-            margin-top: 20px;
-        }
+    /* Node Info Section */
+    #nodeInfo {
+        margin-top: 20px;
+    }
 
-        #editModal .form-group {
-            margin-bottom: 15px;
-        }
-        #editModal label {
-            display: block;
-            margin-bottom: 5px;
-        }
-        #editModal input[type="text"] {
-            width: 100%;
-            padding: 8px;
-            box-sizing: border-box;
-        }
-        #editModal ul {
-            list-style: none;
-            padding: 0;
-        }
-        #editModal ul li {
-            background-color: #e1e1e1;
-            margin: 5px 0;
-            padding: 10px;
-            border-radius: 5px;
-        }
+    #editModal .form-group {
+        margin-bottom: 15px;
+    }
+    #editModal label {
+        display: block;
+        margin-bottom: 5px;
+    }
+    #editModal input[type="text"] {
+        width: 100%;
+        padding: 8px;
+        box-sizing: border-box;
+    }
+    #editModal ul {
+        list-style: none;
+        padding: 0;
+    }
+    #editModal ul li {
+        background-color: #e1e1e1;
+        margin: 5px 0;
+        padding: 10px;
+        border-radius: 5px;
+    }
+    .info-bar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px; /* Space between items */
+        margin-top: 20px; /* Space above the info bar */
+        margin-bottom: 20px; /* Space below the info bar */
+        justify-content: center; /* Center items horizontally */
+    }
+
+    .info-item {
+        display: flex;
+        align-items: center;
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        padding: 10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        flex: 1;
+        max-width: 250px; /* Adjust as needed */
+        text-align: center; /* Center text horizontally */
+        word-wrap: break-word; /* Handle long text */
+    }
+
+    .info-item i {
+        margin-right: 8px;
+        color: #333;
+    }
+
+    .info-item span {
+        font-size: 1em;
+        color: #333;
+    }
+
+
+    .info-box {
+        margin-top: 20px;
+        margin-bottom: 20px;
+        padding: 15px;
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
     </style>
 </head>
 <body>
@@ -177,17 +225,38 @@
                 <i class="fas fa-network-wired"></i> View Network
             </button>
         </div>
-        <p><strong>Title:</strong> {{ person.title }}</p>
-        <p><strong>Division:</strong> {{ person.division }}</p>
-        <p><strong>Program:</strong> {{ person.program }}</p>
-        <p><strong>Email:</strong> {{ person.email }}</p>
-        <p><strong>Bio:</strong> {{ person.bio }}</p>
-        <p><strong>Top Skills:</strong> {{ person.top_skills }}</p>
-        <p><strong>All Skills:</strong> {{ person.other_skills }}</p>
+        <div class="info-bar">
+            <div class="info-item">
+                <i class="fas fa-briefcase"></i>
+                <span>{{ person.title }}</span>
+            </div>
+            <div class="info-item">
+                <i class="fas fa-building"></i>
+                <span>{{ person.division }}</span>
+            </div>
+            <div class="info-item">
+                <i class="fas fa-graduation-cap"></i>
+                <span>{{ person.program }}</span>
+            </div>
+            <div class="info-item">
+                <i class="fas fa-envelope"></i>
+                <span>{{ person.email }}</span>
+            </div>
+        </div>
+        <div class="info-box">
+            <p><strong>Bio:</strong> {{ person.bio }}</p>
+        </div>
+        <div class="info-box">
+            <p><strong>Top Skills:</strong> {{ person.top_skills }}</p>
+        </div>
+        <div class="info-box">
+            <p><strong>All Skills:</strong> {{ person.other_skills }}</p>
+        </div>
         <a href="{% url 'edit_person' person.unique_id %}" class="view-network-button">
             <i class="fas fa-edit"></i> Edit Details
         </a>
     </div>
+
 
 
     <!-- Existing Network Modal -->
