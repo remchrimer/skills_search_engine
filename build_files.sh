@@ -3,6 +3,7 @@ python3.9 -m venv venv
 source venv/bin/activate
 #python3.9 -m pip install --upgrade pip
 pip install django
+pip install PyPDF2
 python3.9 -m pip install -r requirements.txt
 python3.9 manage.py migrate
 python3.9 manage.py collectstatic
