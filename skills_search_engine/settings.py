@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-(**n9s!qn-o$fq2*ilkdp36+kp(2c@=il_0(y*hi7t6w&7y84f
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['.vercel.app', '.now.sh']
 
 
 # Application definition
@@ -82,12 +82,12 @@ WSGI_APPLICATION = 'skills_search_engine.wsgi.application'
 # }
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.mysql",
-        'NAME': 'mydb',
+        "ENGINE": "django.db.backends.postgresql",
+        'NAME': 'skill_person',
         'USER': 'root',
         'PASSWORD': 'AA56534bb',
         'HOST': 'localhost',
-        'PORT': '3306',
+        'PORT': '6625',
     }
 }
 
@@ -125,9 +125,9 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
-
+import os
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [BASE_DIR / 'static']
+STATICFILES_DIRS = os.path.join(BASE_DIR, 'static')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
