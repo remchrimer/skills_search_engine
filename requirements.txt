@@ -73,6 +73,7 @@ matrix-mdp-gym==1.1.1
 mdurl==0.1.2
 mistune==3.0.1
 murmurhash==1.0.10
+mysqlclient==2.2.4
 nbclient==0.8.0
 nbconvert==7.8.0
 nbformat==5.9.2
@@ -95,6 +96,7 @@ prometheus-client==0.17.1
 prompt-toolkit==3.0.38
 psutil==5.9.4
 psycopg2==2.9.9
+psycopg2-binary==2.9.9
 ptyprocess==0.7.0
 pure-eval==0.2.2
 pycodestyle==2.10.0
