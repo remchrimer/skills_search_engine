@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-(**n9s!qn-o$fq2*ilkdp36+kp(2c@=il_0(y*hi7t6w&7y84f
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['.vercel.app', '.now.sh']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -80,16 +80,28 @@ WSGI_APPLICATION = 'skills_search_engine.wsgi.application'
 #         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.postgresql",
+#         'NAME': 'skill_person',
+#         'USER': 'root',
+#         'PASSWORD': 'AA56534bb',
+#         'HOST': 'localhost',
+#         'PORT': '6625',
+#     }
+# }
+
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        'NAME': 'skill_person',
-        'USER': 'root',
-        'PASSWORD': 'AA56534bb',
-        'HOST': 'localhost',
-        'PORT': '6625',
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        'NAME': 'postgres',
+        'USER': 'postgres.nelagquwuditmyoexalz',
+        'PASSWORD': 'Y2826ysn6tbQ21801029@',
+        'HOST': 'aws-0-us-west-1.pooler.supabase.com',
+        'PORT': '6543',
     }
 }
+
 
 
 # Password validation
@@ -129,6 +141,7 @@ import os
 STATIC_URL = '/static/'
 STATICFILES_DIRS = os.path.join(BASE_DIR, 'static'),
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_build', 'static')
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
