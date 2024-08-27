@@ -155,3 +155,4 @@ widgetsnbextension==4.0.9
 wrapt==1.16.0
 Django==4.2.11
 PyPDF2 == 3.0.1
+nltk ~= 3.8.1
