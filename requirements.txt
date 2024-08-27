@@ -29,7 +29,7 @@ debugpy==1.6.6
 decorator==5.1.1
 defusedxml==0.7.1
 distlib==0.3.8
-en-core-web-sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-2.2.0/en_core_web_sm-2.2.0.tar.gz#sha256=65cea113d7509d5ab515583bbcbc9a31b4157bebbb73133d4110d2945476eaa4
+en-core-web-sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.0.0/en_core_web_sm-3.0.0.tar.gz
 executing==1.2.0
 Farama-Notifications==0.0.4
 fastjsonschema==2.18.0
