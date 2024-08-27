@@ -150,4 +150,3 @@ Werkzeug==3.0.3
 widgetsnbextension==4.0.9
 wrapt==1.16.0
 setuptools==73.0.1
-Django==4.1.3
