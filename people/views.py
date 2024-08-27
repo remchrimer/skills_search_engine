@@ -1,7 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
 from .models import Person, Skill
-import csv
 
 def index(request):
     return render(request, 'index.html')
@@ -337,7 +336,14 @@ def edit_person(request, unique_id):
         # Get valid skills from the database
         valid_skills = set(Skill.objects.values_list('name', flat=True))
 
-        if all(skill in valid_skills for skill in top_skills_list + other_skills_list):
+        # # Add invalid skills to the database
+        # all_skills = top_skills_list + other_skills_list
+        # for skill in all_skills:
+        #     if skill not in valid_skills:
+        #         Skill.objects.get_or_create(name=skill)
+        #         valid_skills.add(skill)
+
+        if (skill in valid_skills for skill in top_skills_list + other_skills_list):
             person.name = request.POST.get('name')
             person.title = request.POST.get('title')
             person.division = request.POST.get('division')
@@ -349,7 +355,6 @@ def edit_person(request, unique_id):
             person.save()
             return redirect('person_detail', name=person.name, unique_id_part=person.unique_id)
         else:
-            # Handle the case where skills are not valid
             return render(request, 'edit_person.html', {
                 'person': person,
                 'error': 'Invalid skills provided.',
@@ -357,7 +362,6 @@ def edit_person(request, unique_id):
                 'other_skills': other_skills_list,
             })
 
-    # For GET requests, split the skills to pass them as lists to the template
     top_skills = person.top_skills.split(',') if person.top_skills else []
     other_skills = person.other_skills.split(',') if person.other_skills else []
 

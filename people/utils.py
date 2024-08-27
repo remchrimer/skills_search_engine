@@ -4,20 +4,20 @@ import requests
 import json
 from PyPDF2 import PdfReader
 import nltk
-import en_core_web_sm
+from nltk import pos_tag, ne_chunk
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 
 nltk_lock = threading.Lock()
 
-
 nltk.download('punkt', quiet=True)
 nltk.download('stopwords', quiet=True)
 nltk.download('wordnet', quiet=True)
+nltk.download('maxent_ne_chunker', quiet=True)
+nltk.download('words', quiet=True)
 
 ALLOWED_EXTENSIONS = {'pdf'}
-nlp = en_core_web_sm.load()
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -79,11 +79,15 @@ def extract_personal_info(resume_text):
 
     email_pattern = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
 
-    doc = nlp(resume_text)
-    for ent in doc.ents:
-        if ent.label_ == 'PERSON' and not name:
-            name = ent.text
+    with nltk_lock:
+        tokens = word_tokenize(resume_text)
+        pos_tags = pos_tag(tokens)
 
+    chunks = ne_chunk(pos_tags)
+    for chunk in chunks:
+        if hasattr(chunk, 'label') and chunk.label() == 'PERSON':
+            name = ' '.join(c[0] for c in chunk)
+            break
     matches = re.findall(email_pattern, resume_text)
     if matches:
         email = matches[0]
