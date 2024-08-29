@@ -11,6 +11,7 @@ from nltk.stem import WordNetLemmatizer
 
 nltk_lock = threading.Lock()
 
+nltk.download('averaged_perceptron_tagger', quiet=True)
 nltk.download('punkt', quiet=True)
 nltk.download('stopwords', quiet=True)
 nltk.download('wordnet', quiet=True)
