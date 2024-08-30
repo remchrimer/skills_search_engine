@@ -154,7 +154,7 @@ def edit_file(request, file_index):
     print(f"EDIT FILE: {file_details}")
     print(f"EDIT FILE Result: {results_details}")
     if file_index < 0 or file_index >= len(file_details):
-        return render(request, 'edit_file.html', {'error': 'Invalid file index'})
+        return redirect('index')
 
     file_detail = file_details[file_index]
     print(file_index)
@@ -162,6 +162,7 @@ def edit_file(request, file_index):
         file_name = results_details[file_index]['filename']
     else:
         file_name = 'Unknown File'
+        return redirect('index')
     context = {
         'file_name': file_name,
         'file_detail': file_detail,
@@ -219,31 +220,6 @@ def upload_file(request):
         return JsonResponse({'results': results, 'file_details': file_details})
     else:
         return JsonResponse({'error': 'Invalid request method'})
-
-def process_resume(pdf_file, client_id, client_secret):
-    resume_text = extract_text_from_pdf(pdf_file)
-    preprocessed_text = preprocess_text(resume_text)
-    tokens = tokenize_and_process(preprocessed_text)
-
-    access_token = get_lightcast_access_token(client_id, client_secret)
-    specialized_skills = extract_lightcast_skills(access_token, resume_text)
-
-    name, email = extract_personal_info(resume_text)
-
-    return {
-        "name": name,
-        "email": email,
-        "topSkills": specialized_skills[:5],
-        "otherSkills": specialized_skills[5:]
-    }
-
-
-def extract_text_from_pdf(pdf_file):
-    reader = PdfReader(pdf_file)
-    text = ""
-    for page in reader.pages:
-        text += page.extract_text()
-    return text
 
 def save_to_database(name, email, title, division, program, bio, top_skills, other_skills, unique_id):
     person, created = Person.objects.update_or_create(
@@ -338,12 +314,8 @@ def edit_person(request, unique_id):
     if request.method == 'POST':
         top_skills = request.POST.get('top_skills', '')
         other_skills = request.POST.get('other_skills', '')
-
-        # Split and clean the skills (remove whitespace, etc.)
         top_skills_list = [skill.strip() for skill in top_skills.split(',') if skill.strip()]
         other_skills_list = [skill.strip() for skill in other_skills.split(',') if skill.strip()]
-
-        # Get valid skills from the database
         valid_skills = set(Skill.objects.values_list('name', flat=True))
 
         # # Add invalid skills to the database

@@ -123,65 +123,15 @@ def extract_personal_info(resume_text):
 
 def process_resume(pdf_path, client_id, client_secret):
     try:
-        # resume_text = extract_text_from_pdf(pdf_path)
-        # preprocessed_text = preprocess_text(resume_text)
-        # tokens = tokenize_and_process(preprocessed_text)
-        #
-        # access_token = get_lightcast_access_token(client_id, client_secret)
-        # specialized_skills = extract_lightcast_skills(access_token, resume_text)
-        #
-        # name, email = extract_personal_info(resume_text)
-        #
-        # return {
-        #     "tokens": tokens,
-        #     "specialized_skills": specialized_skills,
-        #     "name": name,
-        #     "email": email
-        # }
-        try:
-            resume_text = extract_text_from_pdf(pdf_path)
-        except Exception as e:
-            print(f"Error extracting text from PDF: {e}")
-            raise
+        resume_text = extract_text_from_pdf(pdf_path)
+        preprocessed_text = preprocess_text(resume_text)
+        tokens = tokenize_and_process(preprocessed_text)
 
-            # Preprocess text
-        try:
-            preprocessed_text = preprocess_text(resume_text)
-        except Exception as e:
-            print(f"Error preprocessing text: {e}")
-            raise
+        access_token = get_lightcast_access_token(client_id, client_secret)
+        specialized_skills = extract_lightcast_skills(access_token, resume_text)
 
-            # Tokenize and process text
-        try:
-            tokens = tokenize_and_process(preprocessed_text)
-        except Exception as e:
-            print(f"Error tokenizing and processing text: {e}")
-            raise
+        name, email = extract_personal_info(resume_text)
 
-            # Get access token for API
-        try:
-            access_token = get_lightcast_access_token(client_id, client_secret)
-        except Exception as e:
-            print(f"Error obtaining access token: {e}")
-            raise
-
-            # Extract specialized skills
-        try:
-            specialized_skills = extract_lightcast_skills(access_token, resume_text)
-        except Exception as e:
-            print(f"Error extracting specialized skills: {e}")
-            raise
-
-            # Extract personal information
-        try:
-            name, email = extract_personal_info(resume_text)
-        except Exception as e:
-            print(f"Error extracting personal information: {e}")
-            raise
-        print(pdf_path)
-        print(tokens)
-        print(name)
-        print(email)
         return {
             "tokens": tokens,
             "specialized_skills": specialized_skills,
