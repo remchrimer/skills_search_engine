@@ -133,10 +133,10 @@ def process_resume(pdf_path, client_id, client_secret):
         name, email = extract_personal_info(resume_text)
 
         return {
-            "tokens": tokens,
-            "specialized_skills": specialized_skills,
             "name": name,
-            "email": email
+            "email": email,
+            "topSkills": specialized_skills[:5],
+            "otherSkills": specialized_skills[5:]
         }
     except Exception as e:
         print(f"Error processing resume: {e}")
