@@ -8,15 +8,40 @@ from nltk import pos_tag, ne_chunk
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
+from nltk.data import find
 
 nltk_lock = threading.Lock()
 
-nltk.download('averaged_perceptron_tagger', quiet=True)
-nltk.download('punkt', quiet=True)
-nltk.download('stopwords', quiet=True)
-nltk.download('wordnet', quiet=True)
-nltk.download('maxent_ne_chunker', quiet=True)
-nltk.download('words', quiet=True)
+def download_nltk_data():
+    try:
+        find('tokenizers/punkt')
+    except LookupError:
+        nltk.download('punkt', quiet=True)
+
+    try:
+        find('corpora/stopwords.zip')
+    except LookupError:
+        nltk.download('stopwords', quiet=True)
+
+    try:
+        find('taggers/averaged_perceptron_tagger')
+    except LookupError:
+        nltk.download('averaged_perceptron_tagger', quiet=True)
+
+    try:
+        find('corpora/wordnet.zip')
+    except LookupError:
+        nltk.download('wordnet', quiet=True)
+
+    try:
+        find('chunkers/maxent_ne_chunker')
+    except LookupError:
+        nltk.download('maxent_ne_chunker', quiet=True)
+
+    try:
+        find('corpora/words.zip')
+    except LookupError:
+        nltk.download('words', quiet=True)
 
 ALLOWED_EXTENSIONS = {'pdf'}
 
@@ -68,6 +93,7 @@ def preprocess_text(text):
 
 def tokenize_and_process(text):
     with nltk_lock:
+        download_nltk_data()
         tokens = word_tokenize(text)
         stop_words = set(stopwords.words('english'))
         lemmatizer = WordNetLemmatizer()
@@ -79,7 +105,7 @@ def extract_personal_info(resume_text):
     email = None
 
     email_pattern = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
-
+    download_nltk_data()
     with nltk_lock:
         tokens = word_tokenize(resume_text)
         pos_tags = pos_tag(tokens)
@@ -96,18 +122,72 @@ def extract_personal_info(resume_text):
     return name, email
 
 def process_resume(pdf_path, client_id, client_secret):
-    resume_text = extract_text_from_pdf(pdf_path)
-    preprocessed_text = preprocess_text(resume_text)
-    tokens = tokenize_and_process(preprocessed_text)
+    try:
+        # resume_text = extract_text_from_pdf(pdf_path)
+        # preprocessed_text = preprocess_text(resume_text)
+        # tokens = tokenize_and_process(preprocessed_text)
+        #
+        # access_token = get_lightcast_access_token(client_id, client_secret)
+        # specialized_skills = extract_lightcast_skills(access_token, resume_text)
+        #
+        # name, email = extract_personal_info(resume_text)
+        #
+        # return {
+        #     "tokens": tokens,
+        #     "specialized_skills": specialized_skills,
+        #     "name": name,
+        #     "email": email
+        # }
+        try:
+            resume_text = extract_text_from_pdf(pdf_path)
+        except Exception as e:
+            print(f"Error extracting text from PDF: {e}")
+            raise
 
-    access_token = get_lightcast_access_token(client_id, client_secret)
-    specialized_skills = extract_lightcast_skills(access_token, resume_text)
+            # Preprocess text
+        try:
+            preprocessed_text = preprocess_text(resume_text)
+        except Exception as e:
+            print(f"Error preprocessing text: {e}")
+            raise
 
-    name, email = extract_personal_info(resume_text)
+            # Tokenize and process text
+        try:
+            tokens = tokenize_and_process(preprocessed_text)
+        except Exception as e:
+            print(f"Error tokenizing and processing text: {e}")
+            raise
 
-    return {
-        "tokens": tokens,
-        "specialized_skills": specialized_skills,
-        "name": name,
-        "email": email
-    }
+            # Get access token for API
+        try:
+            access_token = get_lightcast_access_token(client_id, client_secret)
+        except Exception as e:
+            print(f"Error obtaining access token: {e}")
+            raise
+
+            # Extract specialized skills
+        try:
+            specialized_skills = extract_lightcast_skills(access_token, resume_text)
+        except Exception as e:
+            print(f"Error extracting specialized skills: {e}")
+            raise
+
+            # Extract personal information
+        try:
+            name, email = extract_personal_info(resume_text)
+        except Exception as e:
+            print(f"Error extracting personal information: {e}")
+            raise
+        print(pdf_path)
+        print(tokens)
+        print(name)
+        print(email)
+        return {
+            "tokens": tokens,
+            "specialized_skills": specialized_skills,
+            "name": name,
+            "email": email
+        }
+    except Exception as e:
+        print(f"Error processing resume: {e}")
+        raise

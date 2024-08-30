@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
 from .models import Person, Skill
+import time
 
 def index(request):
     return render(request, 'index.html')
@@ -170,6 +171,8 @@ def edit_file(request, file_index):
     return render(request, 'edit_file.html', context)
 
 
+MAX_RETRIES = 3
+RETRY_DELAY = 2
 @csrf_exempt
 def upload_file(request):
     if request.method == 'POST':
@@ -193,13 +196,21 @@ def upload_file(request):
             client_id = "ip9yko1op2a386go"
             client_secret = "VvVpcySC"
 
-            try:
-                data = process_resume(pdf_file, client_id, client_secret)
-                results.append({'filename': file.name, 'status': 'success'})
-                file_details.append(data)
-            except Exception as e:
-                results.append({'filename': file.name, 'status': 'error', 'error': str(e)})
-                file_details.append({})
+            attempt = 0
+            success = False
+            while attempt < MAX_RETRIES and not success:
+                try:
+                    data = process_resume(pdf_file, client_id, client_secret)
+                    results.append({'filename': file.name, 'status': 'success'})
+                    file_details.append(data)
+                    success = True
+                except Exception as e:
+                    attempt += 1
+                    if attempt < MAX_RETRIES:
+                        time.sleep(RETRY_DELAY)
+                    else:
+                        results.append({'filename': file.name, 'status': 'error', 'error': str(e)})
+                        file_details.append({})
 
         request.session['file_details'] = file_details
         request.session['results'] = results
@@ -208,7 +219,6 @@ def upload_file(request):
         return JsonResponse({'results': results, 'file_details': file_details})
     else:
         return JsonResponse({'error': 'Invalid request method'})
-
 
 def process_resume(pdf_file, client_id, client_secret):
     resume_text = extract_text_from_pdf(pdf_file)
