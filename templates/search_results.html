@@ -7,188 +7,209 @@
   <title>Search Results</title>
   <link rel="stylesheet" href="{% static 'styles.css' %}">
   <style>
-      body {
-          font-family: 'Roboto', sans-serif;
-          margin: 0;
-          padding: 0;
-          background: url("{% static 'images/neu_exp.jpg' %}") no-repeat center center fixed;
-          background-size: cover;
-          color: #333;
-      }
-
-
-      .container {
-            display: flex;
-            width: 90%;
-            max-width: 1200px;
-            margin: 80px auto 40px auto;
-            padding: 40px;
-            background: #fff;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.6);
-            border-radius: 8px;
-            position: relative;
-            top: -10px;
-      }
-
-
-      .filters {
-          width: 30%;
-          padding-right: 20px;
-          box-sizing: border-box;
-          border-right: 2px solid #eee;
-      }
-
-
-      .filters h2 {
-          font-size: 1.75em;
-          margin-bottom: 20px;
-          color: #333;
-          border-bottom: 2px solid #f2f2f2;
-          padding-bottom: 10px;
-      }
-
-
-      .filters .form-group {
-          margin-bottom: 20px;
-      }
-
-
-      .filters .form-group label {
-          font-weight: bold;
-          margin-bottom: 5px;
-          color: #666;
-      }
-
-
-      .filters .form-group select {
-          width: 100%;
-          padding: 12px;
-          font-size: 16px;
-          border-radius: 6px;
-          border: 1px solid #ddd;
-          background-color: #f9f9f9;
-          box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-      }
-
-
-      .filters .form-group select:focus {
-          border-color: #007bff;
-          outline: none;
-          box-shadow: 0 0 0 0.2rem rgba(38, 143, 255, 0.25);
-      }
-
-
-      .filters button {
-          padding: 12px 20px;
-          font-size: 16px;
-          border: none;
-          border-radius: 6px;
-          background-color: #000000;
-          color: #fff;
-          cursor: pointer;
-          transition: background-color 0.3s;
-      }
-
-
-      .filters button:hover {
-          background-color: #a4804a;
-      }
-
-
-      .results {
-          width: 70%;
-          padding-left: 20px;
-          box-sizing: border-box;
-      }
-
-
-      .results h1 {
-          font-size: 2.5em;
-          margin-bottom: 20px;
-          color: #333;
-      }
-
-
-      .search-bar {
-          margin-bottom: 30px;
-      }
-
-
-      .search-bar input {
-          padding: 12px;
-          font-size: 16px;
-          border-radius: 6px;
-          border: 1px solid #ddd;
-          width: 80%;
-          max-width: 600px;
-          box-sizing: border-box;
-      }
-
-
-      .search-bar button {
-          padding: 12px 20px;
-          font-size: 16px;
-          border: none;
-          border-radius: 6px;
-          background-color: #000000;
-          color: #fff;
-          cursor: pointer;
-          transition: background-color 0.3s;
-          margin-left: -4px;
-      }
-
-
-      .search-bar button:hover {
-          background-color: #a4804a;
-      }
-
-
-      .result-box {
-          border: 1px solid #ddd;
-          border-radius: 8px;
-          padding: 20px;
-          margin-bottom: 20px;
-          background-color: #fff;
-          transition: background-color 0.3s, box-shadow 0.3s;
-          text-decoration: none;
-          color: #333;
-          display: block;
-          text-align: left;
-          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-      }
-
-
-      .result-box:hover {
-          background-color: #f0f0f0;
-          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-      }
-
-
-      .result-header {
-          font-size: 1.5em;
-          margin-bottom: 10px;
-      }
-
-
-      .result-details {
-          font-size: 1em;
-      }
-
-
-      .result-details span {
-          display: block;
-          margin-bottom: 5px;
-      }
-
-
-      .logo {
-          width: 150px;
-          height: auto;
-          margin-bottom: 20px;
-      }
-  </style>
-</head>
-<body>
+    body {
+      font-family: 'Roboto', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: url("{% static 'images/neu_exp.jpg' %}") no-repeat center center fixed;
+      background-size: cover;
+      color: #333;
+    }
+    
+    
+    .container {
+        display: flex;
+        width: 90%;
+        max-width: 1200px;
+        margin: 80px auto 40px auto;
+        padding: 40px;
+        background: #fff;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.6);
+        border-radius: 8px;
+        position: relative;
+        top: -10px;
+    }
+    
+    
+    .filters {
+      width: 30%;
+      padding-right: 20px;
+      box-sizing: border-box;
+      border-right: 2px solid #eee;
+    }
+    
+    
+    .filters h2 {
+      font-size: 1.75em;
+      margin-bottom: 20px;
+      color: #333;
+      border-bottom: 2px solid #f2f2f2;
+      padding-bottom: 10px;
+    }
+    
+    
+    .filters .form-group {
+      margin-bottom: 20px;
+    }
+    
+    
+    .filters .form-group label {
+      font-weight: bold;
+      margin-bottom: 5px;
+      color: #666;
+    }
+    
+    
+    .filters .form-group select {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      border-radius: 6px;
+      border: 1px solid #ddd;
+      background-color: #f9f9f9;
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+    
+    
+    .filters .form-group select:focus {
+      border-color: #007bff;
+      outline: none;
+      box-shadow: 0 0 0 0.2rem rgba(38, 143, 255, 0.25);
+    }
+    
+    
+    .filters button {
+      padding: 12px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      background-color: #000000;
+      color: #fff;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    
+    
+    .filters button:hover {
+      background-color: #a4804a;
+    }
+    
+    
+    .results {
+      width: 70%;
+      padding-left: 20px;
+      box-sizing: border-box;
+    }
+    
+    
+    .results h1 {
+      font-size: 2.5em;
+      margin-bottom: 20px;
+      color: #333;
+    }
+    
+    
+    .search-bar {
+      margin-bottom: 30px;
+    }
+    
+    
+    .search-bar input {
+      padding: 12px;
+      font-size: 16px;
+      border-radius: 6px;
+      border: 1px solid #ddd;
+      width: 80%;
+      max-width: 600px;
+      box-sizing: border-box;
+    }
+    
+    
+    .search-bar button {
+      padding: 12px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      background-color: #000000;
+      color: #fff;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      margin-left: -4px;
+    }
+    
+    
+    .search-bar button:hover {
+      background-color: #a4804a;
+    }
+    
+    
+    .result-box {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+      background-color: #fff;
+      transition: background-color 0.3s, box-shadow 0.3s;
+      text-decoration: none;
+      color: #333;
+      display: block;
+      text-align: left;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    
+    .result-box:hover {
+      background-color: #f0f0f0;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    }
+    
+    
+    .result-header {
+      font-size: 1.5em;
+      margin-bottom: 10px;
+    }
+    
+    
+    .result-details {
+      font-size: 1em;
+    }
+    
+    
+    .result-details span {
+      display: block;
+      margin-bottom: 5px;
+    }
+    
+    
+    .logo {
+      width: 150px;
+      height: auto;
+      margin-bottom: 20px;
+    }
+    .home-button {
+    padding: 10px 15px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #000000;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    display: inline-block;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+    position: absolute; 
+    top: 20px; 
+    right: 20px;
+    }
+    
+    .home-button:hover {
+    background-color: #a4804a;
+    transform: scale(1.1);
+    }
+    </style>
+    </head>
+    <body>
   <div class="container">
       <div class="filters">
           <a href="{% url 'index' %}"><img src="{% static 'images/Northeastern_logo.svg' %}" alt="Logo" class="logo"></a>
@@ -213,6 +234,7 @@
                       <option value="Graduate Professional" {% if division_filter == 'Graduate Professional' %}selected{% endif %}>Graduate Professional</option>
                       <option value="Pathways" {% if division_filter == 'Pathways' %}selected{% endif %}>Pathways</option>
                       <option value="GSE" {% if division_filter == 'GSE' %}selected{% endif %}>GSE</option>
+                      <option value="Dean’s Office" {% if division_filter == 'Dean’s Office' %}selected{% endif %}>Dean’s Office</option>
                       <option value="All" {% if division_filter == 'All' %}selected{% endif %}>All</option>
                   </select>
               </div>
@@ -304,6 +326,7 @@
               <p>No results found for "{{ query }}"</p>
           {% endif %}
       </div>
+  <a href="{% url 'index' %}" class="home-button">X</a>
   </div>
 </body>
 </html>
