@@ -76,12 +76,12 @@
                 <label for="division">Division:</label>
                 <select class="form-control" id="division" name="division" required>
                     <option value="">Select Division</option>
+                    <option value="All" {% if file_detail.division == 'All' %}selected{% endif %}>All</option
                     <option value="Undergraduate" {% if file_detail.division == 'Undergraduate' %}selected{% endif %}>Undergraduate</option>
                     <option value="Graduate Professional" {% if file_detail.division == 'Graduate Professional' %}selected{% endif %}>Graduate Professional</option>
                     <option value="Pathways" {% if file_detail.division == 'Pathways' %}selected{% endif %}>Pathways</option>
                     <option value="GSE" {% if file_detail.division == 'GSE' %}selected{% endif %}>GSE</option>
-                    <option value="Dean’s Office" {% if file_detail.division == 'Dean’s Office' %}selected{% endif %}>Dean’s Office</option>
-                    <option value="All" {% if file_detail.division == 'All' %}selected{% endif %}>All</option>
+                    <option value="Dean’s Office" {% if file_detail.division == 'Dean’s Office' %}selected{% endif %}>Dean’s Office</option> 
                 </select>
             </div>
 
@@ -89,6 +89,7 @@
                 <label for="program">Program:</label>
                 <select class="form-control" id="program" name="program" required>
                     <option value="">Select Program</option>
+                    <option value="Applied Logistics" {% if file_detail.program == 'Applied Logistics' %}selected{% endif %}>Applied Logistics</option>
                     <option value="Advanced Manufacturing" {% if file_detail.program == 'Advanced Manufacturing' %}selected{% endif %}>Advanced Manufacturing</option>
                     <option value="Analytics" {% if file_detail.program == 'Analytics' %}selected{% endif %}>Analytics</option>
                     <option value="Applied Machine Intelligence" {% if file_detail.program == 'Applied Machine Intelligence' %}selected{% endif %}>Applied Machine Intelligence</option>
@@ -109,12 +110,12 @@
                     <option value="Finance and Accounting Mgt." {% if file_detail.program == 'Finance and Accounting Mgt.' %}selected{% endif %}>Finance and Accounting Mgt.</option>
                      <option value="Foundation Year" {% if file_detail.program == 'Foundation Year' %}selected{% endif %}>Foundation Year</option>
                     <option value="Geospatial Services" {% if file_detail.program == 'Geospatial Services' %}selected{% endif %}>Geospatial Services</option>
+                    <option value="Global Pathways" {% if file_detail.program == 'Global Pathwayss' %}selected{% endif %}>Global Pathways</option>
                     <option value="Global Social Enterprise Graduate Professional Certificates" {% if file_detail.program == 'Global Social Enterprise Graduate Professional Certificates' %}selected{% endif %}>Global Social Enterprise Graduate Professional Certificates</option>
                     <option value="Global Studies and International Relations" {% if file_detail.program == 'Global Studies and International Relations' %}selected{% endif %}>Global Studies and International Relations</option>
                     <option value="Health Management" {% if file_detail.program == 'Health Management' %}selected{% endif %}>Health Management</option>
                     <option value="Health Science" {% if file_detail.program == 'Health Science' %}selected{% endif %}>Health Science</option>
                     <option value="Healthcare Administration" {% if file_detail.program == 'Healthcare Administration' %}selected{% endif %}>Healthcare Administration</option>
-                    <option value="Higher Education Administration" {% if file_detail.program == 'Higher Education Administration' %}selected{% endif %}>Higher Education Administration</option>
                     <option value="Homeland Security, Port Security" {% if file_detail.program == 'Homeland Security, Port Security' %}selected{% endif %}>Homeland Security, Port Security</option>
                     <option value="Human Resources Management" {% if file_detail.program == 'Human Resources Management' %}selected{% endif %}>Human Resources Management</option>
                     <option value="Informatics" {% if file_detail.program == 'Informatics' %}selected{% endif %}>Informatics</option>
@@ -141,8 +142,13 @@
                     <option value="Security and Intelligence Studies" {% if file_detail.program == 'Security and Intelligence Studies' %}selected{% endif %}>Security and Intelligence Studies</option>
                     <option value="Sports Leadership" {% if file_detail.program == 'Sports Leadership' %}selected{% endif %}>Sports Leadership</option>
                     <option value="Strategic Intelligence & Analysis" {% if file_detail.program == 'Strategic Intelligence & Analysis' %}selected{% endif %}>Strategic Intelligence & Analysis</option>
-                    <option value="Teaching - Elementary" {% if file_detail.program == 'Teaching - Elementary' %}selected{% endif %}>Teaching - Elementary</option>
-                    <option value="Teaching - Secondary" {% if file_detail.program == 'Teaching - Secondary' %}selected{% endif %}>Teaching - Secondary</option>
+                    <option value="MAT Elementary" {% if file_detail.program == 'MAT Elementary' %}selected{% endif %}>MAT Elementary</option>
+                    <option value="MAT Secondary" {% if file_detail.program == 'MAT Secondary' %}selected{% endif %}>MAT Secondary</option>
+                    <option value="MEd Special Education" {% if file_detail.program == 'MEd Special Education' %}selected{% endif %}>MEd Special Education</option>
+                    <option value="MEd ESL" {% if file_detail.program == 'MEd ESL' %}selected{% endif %}>MEd ESL</option>
+                    <option value="MEd Higher Education Administration" {% if file_detail.program == 'MEd Higher Education Administration' %}selected{% endif %}>MEd Higher Education Administration</option>
+                    <option value="MEd Learning and Instruction" {% if file_detail.program == 'MEd Learning and Instruction' %}selected{% endif %}>MEd Learning and Instruction</option>
+                    <option value="MPS Learning Experience Design and Technology" {% if file_detail.program == 'MPS Learning Experience Design and Technology' %}selected{% endif %}>MPS Learning Experience Design and Technology</option>
                     <option value="Technical Communication" {% if file_detail.program == 'Technical Communication' %}selected{% endif %}>Technical Communication</option>
                     <option value="Transitional Doctor of Physical Therapy" {% if file_detail.program == 'Transitional Doctor of Physical Therapy' %}selected{% endif %}>Transitional Doctor of Physical Therapy</option>
                     <option value="Learning & Instruction" {% if file_detail.program == 'Learning & Instruction' %}selected{% endif %}>Learning & Instruction</option>
