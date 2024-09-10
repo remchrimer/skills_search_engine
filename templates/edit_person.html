@@ -11,6 +11,9 @@
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+    <script src="https://cdn.ckeditor.com/4.20.1/standard/ckeditor.js"></script>
+    
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -188,9 +191,12 @@
                 </select>
             </div>
             <div class="form-group">
-                <label for="bio">Research Interests and Projects:</label>
-                <textarea class="form-control" id="bio" name="bio" placeholder="Provide a brief narrative highlighting your research interests, current and/or future projects, and/or collaborators." required>{{ person.bio|default:'' }}</textarea>
+              <label for="bio">Research Interests and Projects:</label>
+              <textarea class="form-control" id="bio" name="bio" placeholder="Provide a brief narrative highlighting your research interests, current and/or future projects, and/or collaborators." required>{{ person.bio|default:'' }}</textarea>
             </div>
+            <script>
+                CKEDITOR.replace('bio');
+            </script>
           <div class="form-group">
                 <label>Top Skills:</label>
                 <div id="top-skills-container">

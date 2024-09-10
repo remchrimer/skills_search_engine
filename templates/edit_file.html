@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit File</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://cdn.ckeditor.com/4.20.1/standard/ckeditor.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const form = document.querySelector("form");
@@ -157,7 +158,9 @@
                 <label for="bio">Research Interests and Projects:</label>
                 <textarea class="form-control" id="bio" name="bio" placeholder="Provide a brief narrative highlighting your research interests, current and/or future projects, and/or collaborators." required>{{ file_detail.bio|default:'' }}</textarea>
             </div>
-
+            <script>
+                CKEDITOR.replace('bio');
+            </script>
            <div class="form-group">
                 <label for="top_skills">Top Skills:</label>
                 <input type="text" class="form-control" id="top_skills" name="top_skills" value="{{ file_detail.topSkills|default:''|join:", " }}">

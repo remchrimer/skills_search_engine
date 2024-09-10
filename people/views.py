@@ -268,7 +268,12 @@ def save_details(request):
                     'next_url': f"{reverse('edit_file', kwargs={'file_index': next_file_index})}"
                 })
             else:
-                return JsonResponse({'message': 'Details saved successfully', 'next_url': reverse('upload_resume')})
+                person_detail_url = reverse('person_detail', kwargs={'name': name, 'unique_id_part': unique_id})
+                return JsonResponse({
+                    'message': 'Details saved successfully',
+                    'next_url': person_detail_url
+                })
+                # return JsonResponse({'message': 'Details saved successfully', 'next_url': reverse('upload_resume')})
         except Exception as e:
             return JsonResponse({'error': str(e)})
     else:
