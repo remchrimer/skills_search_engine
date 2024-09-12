@@ -208,7 +208,7 @@
                     {% endfor %}
                 </div>
                 <div class="add-skill-section">
-                    <label for="new_top_skill">Add Top Skill:</label>
+                    <label for="new_top_skill">Add Featured Skill:</label>
                     <input type="text" id="new_top_skill"  <input type="text" id="new_top_skill" placeholder="Feature up to 5 skills. These will be used to generate a Network Map showing connections with faculty who share these skills.">
                     
                 </div>
@@ -302,7 +302,7 @@
                         $("#top-skills-container").append('<div class="skill-block">' + skill + '<span class="remove-btn" data-skill="' + skill + '">x</span></div>');
                     }
                 } else {
-                    alert("You can only add up to 5 top skills.");
+                    alert("You can only feature up to 5 skills.");
                 }
 
                 $(this).val("");
