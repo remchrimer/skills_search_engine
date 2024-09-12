@@ -90,6 +90,14 @@
             color: #a4804a;
         }
 
+        .search-text {
+            font-size: 12pt;  
+            color: #ffffff;   
+            font-style: italic; 
+            text-align: center; 
+            margin-top: 20px; 
+        }
+
         .welcome-text {
             margin-bottom: 30px;
             font-size: 18px;
@@ -122,6 +130,9 @@
                     </div>
                 </div>
             </form>
+            <div class="search-text">
+                Type a keyword or name to begin your search.
+            </div>
         </div>
         <a href="{% url 'passcode_check' %}" class="upload-logo" title="Upload">
             <i class="fas fa-upload"></i>
